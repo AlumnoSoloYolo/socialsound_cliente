@@ -1,0 +1,123 @@
+{% extends 'principal.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h1 class="mb-4">Canciones</h1>
+
+    {% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if canciones %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for cancion in canciones %}
+        <div class="col">
+            <div class="card h-100">
+                <!-- Imagen/Portada -->
+                <div class="position-relative">
+                    {% if cancion.portada %}
+                        <img src="{{ cancion.portada }}" class="card-img-top" alt="{{ cancion.titulo }}" style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-music fa-3x"></i>
+                        </div>
+                    {% endif %}
+                    <!-- Badge de género -->
+                    <span class="position-absolute top-0 end-0 m-2 badge bg-primary">
+                        {{ cancion.etiqueta_display }}
+                    </span>
+                </div>
+
+                <div class="card-body">
+                    <!-- Título y Artista -->
+                    <h5 class="card-title">{{ cancion.titulo }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ cancion.artista }}</h6>
+
+                    <!-- Información del álbum si existe -->
+                    {% if cancion.album %}
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            Del álbum: {{ cancion.album.titulo }}
+                        </small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Detalles de la canción -->
+                    {% if cancion.detalles %}
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col">
+                                <small class="text-muted d-block">
+                                    <i class="fas fa-clock"></i> 
+                                    {{ cancion.detalles.duracion_formateada }}
+                                </small>
+                                {% if cancion.detalles.idioma %}
+                                <small class="text-muted d-block">
+                                    <i class="fas fa-language"></i> 
+                                    {{ cancion.detalles.idioma }}
+                                </small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if cancion.detalles.letra %}
+                    Letra:
+                    
+                            <div class="card card-body mt-2">
+                                <pre class="mb-0" style="white-space: pre-wrap;">{{ cancion.detalles.letra }}</pre>
+                            </div>
+                       
+                    {% endif %}
+                    {% endif %}
+
+                    <!-- Créditos si existen -->
+                    {% if cancion.detalles.creditos %}
+                    Créditos:
+        
+                            <div class="card card-body mt-2">
+                                {{ cancion.detalles.creditos }}
+                            </div>
+                        
+                
+                    {% endif %}
+
+                    <!-- Información del usuario que subió la canción -->
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            Subido por: {{ cancion.usuario.nombre_usuario }}
+                        </small>
+                    </div>
+                </div>
+
+                <div class="card-footer text-muted">
+                    <small>
+                        <i class="fas fa-calendar"></i> 
+                        Fecha subida
+                        {{ cancion.fecha_subida }}
+                    </small>
+                    
+                    <!-- Audio player -->
+                    {% if cancion.archivo_audio %}
+                    <div class="mt-2">
+                        <audio controls class="w-100">
+                            <source src="{{ cancion.archivo_audio }}" type="audio/wav">
+                            Tu navegador no soporta el elemento de audio.
+                        </audio>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>No hay canciones para mostrar.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

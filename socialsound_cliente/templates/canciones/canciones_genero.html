@@ -1,0 +1,207 @@
+{% extends "principal.html" %}
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+    .genre-section {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        padding: 20px;
+    }
+    .genre-header {
+        background-color: #3498db;
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+    .genre-header h2 {
+        margin: 0;
+        font-weight: bold;
+    }
+    .song-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .song-card-img {
+        height: 250px;
+        object-fit: cover;
+    }
+    .song-details {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    .detail-section {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    .like-user-list {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+{% block contenido %}
+<div class="container-fluid py-4">
+    <h1 class="text-center mb-5" style="color: #2c3e50;">Canciones por Género</h1>
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if canciones %}
+    {% regroup canciones by etiqueta_display as canciones_por_genero %}
+    
+    {% for genero in canciones_por_genero %}
+        <div class="genre-section">
+            <div class="genre-header">
+                <h2 class="flex-grow-1">{{ genero.grouper }}</h2>
+                <span class="badge bg-light text-dark">{{ genero.list|length }} Canciones</span>
+            </div>
+
+            <div class="row">
+                {% for cancion in genero.list %}
+                <div class="col-12 mb-4">
+                    <div class="card song-card">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                {% if cancion.portada %}
+                                <img src="{{ cancion.portada.url }}" class="img-fluid song-card-img" alt="{{ cancion.titulo }}">
+                                {% else %}
+                                <div class="bg-secondary text-white text-center py-5">
+                                    <h3>{{ cancion.titulo }}</h3>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h2 class="card-title">{{ cancion.titulo }}</h2>
+                                    
+                                    <div class="detail-section">
+                                        <h4>Información Básica</h4>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Artista:</strong> {{ cancion.artista }}</p>
+                                                <p><strong> Album:</strong> {{cancion.album_titulo}}</p>
+                                                <p><strong>Género:</strong> {{ cancion.etiqueta_display }}</p>
+                                                <p><strong>Fecha de Subida:</strong> {{ cancion.fecha_subida }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Total de Likes:</strong> {{ cancion.likes|length }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="detail-section">
+                                        <h4>Información del Usuario</h4>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Nombre de Usuario:</strong> {{ cancion.usuario.nombre_usuario }}</p>
+                                                <p><strong>Email:</strong> {{ cancion.usuario.email }}</p>
+                                                <p><strong>Ciudad:</strong> {{ cancion.usuario.ciudad }}</p>
+                                                <p><strong>Rol:</strong> {{ cancion.usuario.rol_display }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {% if cancion.usuario.foto_perfil %}
+                                                <img src="{{ cancion.usuario.foto_perfil.url }}" class="img-fluid rounded" alt="Foto de Perfil">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% if cancion.album %}
+                                    <div class="detail-section">
+                                        <h4>Información del Álbum</h4>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Álbum:</strong> {{ cancion.album.titulo }}</p>
+                                                <p><strong>Artista del Álbum:</strong> {{ cancion.album.artista }}</p>
+                                                <p><strong>Fecha de Subida del Álbum:</strong> {{ cancion.album.fecha_subida }}</p>
+                                                
+                                                {% if cancion.album.portada %}
+                                                <img src="{{ cancion.album.portada.url }}" class="img-fluid rounded" alt="Portada del Álbum">
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {% if cancion.album.detalle_album %}
+                                                <p><strong>Productor:</strong> {{ cancion.album.detalle_album.productor }}</p>
+                                                <p><strong>Estudio de Grabación:</strong> {{ cancion.album.detalle_album.estudio_grabacion }}</p>
+                                                <p><strong>Número de Pistas:</strong> {{ cancion.album.detalle_album.numero_pistas }}</p>
+                                                <p><strong>Sello Discográfico:</strong> {{ cancion.album.detalle_album.sello_discografico }}</p>
+                                                <p><strong>Comentarios del Álbum:</strong> {{ cancion.album.detalle_album.numero_comentarios }}</p>
+                                                {% endif %}
+                                                
+                                                {% if cancion.album.estadisticasalbum %}
+                                                <h5>Estadísticas del Álbum</h5>
+                                                <p><strong>Reproducciones:</strong> {{ cancion.album.estadisticasalbum.reproducciones }}</p>
+                                                <p><strong>Likes:</strong> {{ cancion.album.estadisticasalbum.likes }}</p>
+                                                <p><strong>Comentarios:</strong> {{ cancion.album.estadisticasalbum.comentarios }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if cancion.detalles %}
+                                    <div class="detail-section">
+                                        <h4>Detalles de la Canción</h4>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Letra:</strong> {{ cancion.detalles.letra|default:"No disponible" }}</p>
+                                                <p><strong>Créditos:</strong> {{ cancion.detalles.creditos|default:"No disponible" }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Duración:</strong> {{ cancion.detalles.duracion_formateada }}</p>
+                                                <p><strong>Idioma:</strong> {{ cancion.detalles.idioma|default:"No especificado" }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if cancion.likes %}
+                                    <div class="detail-section">
+                                        <h4>Usuarios que dieron Like</h4>
+                                        <div class="like-user-list">
+                                            <ul class="list-group">
+                                                {% for like in cancion.likes %}
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    {{ like.usuario.nombre_usuario }}
+                                                    <span class="text-muted">{{ like.fecha_like }}</span>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="col-12">
+        <div class="alert alert-info text-center" role="alert">
+            No hay canciones disponibles en este momento.
+        </div>
+    </div>
+{% endif %}
+</div>
+{% endblock %}

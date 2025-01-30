@@ -1,0 +1,79 @@
+{% extends 'principal.html' %}
+{% load static %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h1 class="mb-4">Playlists de SocialSound</h1>
+
+    {% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if playlists %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for playlist in playlists %}
+        <div class="col">
+            <div class="card h-100">
+                <!-- Encabezado -->
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ playlist.nombre }}</h5>
+                        {% if playlist.publica %}
+                            <span class="badge bg-success">Pública</span>
+                        {% else %}
+                            <span class="badge bg-warning">Privada</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Cuerpo -->
+                <div class="card-body">
+                    <!-- Descripción -->
+                    <p class="card-text">{{ playlist.descripcion }}</p>
+
+                    <!-- Información del creador -->
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            Creada por: {{ playlist.usuario.nombre_usuario }}
+                        </small>
+                    </div>
+
+                    <!-- Lista de canciones -->
+                    <h6 class="mb-2">Canciones ({{ playlist.canciones|length }}):</h6>
+                    <div class="list-group" style="max-height: 200px; overflow-y: auto;">
+                        {% for cancion in playlist.canciones %}
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ cancion.cancion.titulo }}</h6>
+                                <small>{{ cancion.cancion.etiqueta_display }}</small>
+                            </div>
+                            <p class="mb-1">{{ cancion.cancion.artista }}</p>
+                            <small class="text-muted">
+                                Agregada: {{ cancion.fecha_agregada }}
+                            </small>
+                        </div>
+                        {% empty %}
+                        <div class="list-group-item">
+                            <p class="text-muted mb-0">No hay canciones en esta playlist</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="card-footer text-muted">
+                    <small>Creada el {{ playlist.fecha_creacion }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <p>No hay playlists para mostrar.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
