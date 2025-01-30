@@ -144,11 +144,11 @@
 <div class="container">
     <h1>Usuarios de SocialSound</h1>
 
-    {% comment %} {% if error %}
+  {% if error %}
     <div class="error">
         {{ error }}
     </div>
-    {% endif %} {% endcomment %}
+    {% endif %}
 
     {% if usuarios %}
     <div class="user-grid">

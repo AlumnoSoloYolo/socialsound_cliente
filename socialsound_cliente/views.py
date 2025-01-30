@@ -4,9 +4,9 @@ from django.conf import settings
 
 
 
-def lista_playlists_api(request): ### rol cliente
+def lista_playlists_api(request): 
   
-    headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[2]}'}
+    headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'}
     response = requests.get(f"{settings.API_BASE_URL}playlists", headers=headers)
     playlists = response.json()
     return render(request, 'playlists/lista_playlists.html', {'playlists': playlists})
@@ -43,7 +43,7 @@ def lista_usuarios_completa_api(request):
 
 def lista_canciones_api(request):
    
-    headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[2]}'}
+    headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'}
     url = f"{settings.API_BASE_URL}canciones/lista_canciones_completa/"    
     response = requests.get(url, headers=headers)
         
