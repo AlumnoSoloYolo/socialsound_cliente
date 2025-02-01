@@ -1,0 +1,140 @@
+.cyber-audio-player {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-audio-player::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(0, 255, 255, 0.5), 
+        transparent
+    );
+    animation: scan-line 2s linear infinite;
+}
+
+@keyframes scan-line {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.cyber-player-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cyber-play-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 255, 255, 0.1);
+    color: #0ff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.cyber-play-btn:hover {
+    background: rgba(0, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.cyber-play-btn i {
+    font-size: 1rem;
+}
+
+.cyber-time-display {
+    color: rgba(0, 255, 255, 0.8);
+    font-family: monospace;
+    font-size: 0.85rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.cyber-progress-container {
+    flex-grow: 1;
+    cursor: pointer;
+    padding: 0.5rem 0;
+}
+
+.cyber-progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #0ff, #f0f);
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.cyber-progress-bar:hover {
+    height: 6px;
+}
+
+.cyber-progress-bar:hover .cyber-progress {
+    background: linear-gradient(90deg, #0ff, #f0f, #0ff);
+    background-size: 200% 100%;
+    animation: gradient-shift 2s linear infinite;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+
+.cyber-volume-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 100px;
+}
+
+.cyber-volume-icon {
+    color: #0ff;
+    cursor: pointer;
+}
+
+.cyber-volume-slider {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    position: relative;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.cyber-volume-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #0ff;
+    width: 100%;
+}

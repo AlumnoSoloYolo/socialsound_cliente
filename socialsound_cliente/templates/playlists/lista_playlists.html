@@ -1,79 +1,252 @@
 {% extends 'principal.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reproductor.css' %}">
+<link rel="stylesheet" href="{% static 'css/fondo_estrella.css' %}">
+<style>
+    @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(100%); }
+    }
+
+    .screen-container {
+        position: relative;
+        width: 100%;
+        border-radius: 15px;
+        padding: 3px;
+        background: linear-gradient(45deg, rgba(0,0,0,0.5), rgba(255,255,255,0.1));
+    }
+
+    .screen-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 15px;
+        padding: 2px;
+        background: linear-gradient(45deg, #0ff, #f0f, #ff0);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .playlist-window {
+        background: rgba(10, 10, 10, 0.2);
+        border-radius: 15px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        overflow: hidden;
+        position: relative;
+        padding: 2rem;
+    }
+
+    .playlist-window::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.1) 0px,
+            rgba(0, 0, 0, 0.1) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .scanline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            rgba(255, 255, 255, 0.7),
+            transparent
+        );
+        animation: scanline 8s linear infinite;
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .playlist-card {
+        background: rgba(33, 37, 41, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        transition: transform 0.3s ease;
+    }
+
+    .playlist-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .playlist-card .card-header {
+        background: rgba(13, 110, 253, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .playlist-card .card-body {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .playlist-card .card-footer {
+        background: rgba(33, 37, 41, 0.4);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .list-group-item {
+        background: rgba(33, 37, 41, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 0.5rem;
+        color: white;
+    }
+
+    .list-group-item img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-right: 1rem;
+    }
+
+    h1 {
+        color: #0ff;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+</style>
+{% endblock %}
+
 {% block contenido %}
-<div class="container mt-4">
-    <h1 class="mb-4">Playlists de SocialSound</h1>
+<div class="container-star">
+    <div class="stars"></div>
+    <div class="container py-5">
+        <div class="screen-container">
+            <div class="playlist-window">
+                <div class="scanline"></div>
+                <h1 class="text-center mb-5">Playlists de SocialSound</h1>
 
-    {% if error %}
-    <div class="alert alert-danger">
-        {{ error }}
-    </div>
-    {% endif %}
-
-    {% if playlists %}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {% for playlist in playlists %}
-        <div class="col">
-            <div class="card h-100">
-                <!-- Encabezado -->
-                <div class="card-header bg-primary text-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">{{ playlist.nombre }}</h5>
-                        {% if playlist.publica %}
-                            <span class="badge bg-success">Pública</span>
-                        {% else %}
-                            <span class="badge bg-warning">Privada</span>
-                        {% endif %}
-                    </div>
+                {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }}
                 </div>
+                {% endif %}
 
-                <!-- Cuerpo -->
-                <div class="card-body">
-                    <!-- Descripción -->
-                    <p class="card-text">{{ playlist.descripcion }}</p>
-
-                    <!-- Información del creador -->
-                    <div class="mb-3">
-                        <small class="text-muted">
-                            Creada por: {{ playlist.usuario.nombre_usuario }}
-                        </small>
-                    </div>
-
-                    <!-- Lista de canciones -->
-                    <h6 class="mb-2">Canciones ({{ playlist.canciones|length }}):</h6>
-                    <div class="list-group" style="max-height: 200px; overflow-y: auto;">
-                        {% for cancion in playlist.canciones %}
-                        <div class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">{{ cancion.cancion.titulo }}</h6>
-                                <small>{{ cancion.cancion.etiqueta_display }}</small>
+                {% if playlists %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    {% for playlist in playlists %}
+                    <div class="col">
+                        <div class="card playlist-card h-100">
+                            <div class="card-header text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">{{ playlist.nombre }}</h5>
+                                    {% if playlist.publica %}
+                                        <span class="badge bg-success">Pública</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Privada</span>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <p class="mb-1">{{ cancion.cancion.artista }}</p>
-                            <small class="text-muted">
-                                Agregada: {{ cancion.fecha_agregada }}
-                            </small>
-                        </div>
-                        {% empty %}
-                        <div class="list-group-item">
-                            <p class="text-muted mb-0">No hay canciones en esta playlist</p>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
 
-                <!-- Footer -->
-                <div class="card-footer text-muted">
-                    <small>Creada el {{ playlist.fecha_creacion }}</small>
+                            <div class="card-body text-white">
+                                <p class="card-text">{{ playlist.descripcion }}</p>
+
+                                <div class="mb-3 d-flex align-items-center">
+                                    <img src="{{playlist.usuario.foto_perfil_url}}" class="rounded-circle me-2" style="width: 30px; height: 30px;">
+                                    <small class="text-white">
+                                        Creada por: {{ playlist.usuario.nombre_usuario }}
+                                    </small>
+                                </div>
+
+                                <h6 class="mb-2">Canciones ({{ playlist.canciones|length }}):</h6>
+                                <div class="list-group" style="max-height: 200px; overflow-y: auto;">
+                                    {% for cancion in playlist.canciones %}
+                                    <div class="list-group-item">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ cancion.portada_url }}">
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between">
+                                                    <h6 class="mb-1">{{ cancion.cancion.titulo }}</h6>
+                                                    <small>{{ cancion.cancion.etiqueta_display }}</small>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <div class="cyber-audio-player">
+                                                        <audio id="audio-{{ cancion.id }}" src="{{ cancion.archivo_audio_url }}" preload="metadata"></audio>
+                                                        
+                                                        <div class="cyber-player-container">
+                                                            <!-- Botón Play/Pause -->
+                                                            <button class="cyber-play-btn" onclick="togglePlay(this)" data-audio-id="{{ cancion.id }}">
+                                                                <i class="fas fa-play"></i>
+                                                            </button>
+                                                            
+                                                            <!-- Tiempo actual y duración -->
+                                                            <div class="cyber-time-display">
+                                                                <span class="cyber-current-time">0:00</span>
+                                                                <span class="cyber-duration">0:00</span>
+                                                            </div>
+                                                            
+                                                            <!-- Barra de progreso -->
+                                                            <div class="cyber-progress-container">
+                                                                <div class="cyber-progress-bar">
+                                                                    <div class="cyber-progress"></div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Control de volumen -->
+                                                            <div class="cyber-volume-container">
+                                                                <i class="fas fa-volume-up cyber-volume-icon"></i>
+                                                                <div class="cyber-volume-slider">
+                                                                    <div class="cyber-volume-progress"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <p class="mb-1">{{ cancion.cancion.artista }}</p>
+                                                <small class="text-white">
+                                                    Agregada: {{ cancion.fecha_agregada }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% empty %}
+                                    <div class="list-group-item">
+                                        <p class="text-white mb-0">No hay canciones en esta playlist</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <small class="text-white">Creada el {{ playlist.fecha_creacion }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <p>No hay playlists para mostrar.</p>
+                </div>
+                {% endif %}
             </div>
         </div>
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="alert alert-info">
-        <p>No hay playlists para mostrar.</p>
-    </div>
-    {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_script %}
+<script src="{% static 'js/reproductor.js' %}"></script>
 {% endblock %}

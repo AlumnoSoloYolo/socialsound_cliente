@@ -1,207 +1,417 @@
-{% extends "principal.html" %}
+{% extends 'principal.html' %}
+{% load static %}
+
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/reproductor.css' %}">
+<link rel="stylesheet" href="{% static 'css/fondo_estrella.css' %}">
 <style>
-    body {
-        background-color: #f4f6f9;
+    @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(100%); }
     }
+
+    .screen-container {
+        position: relative;
+        width: 100%;
+        border-radius: 15px;
+        padding: 3px;
+        background: linear-gradient(45deg, rgba(0,0,0,0.5), rgba(255,255,255,0.1));
+    }
+
+    .screen-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 15px;
+        padding: 2px;
+        background: linear-gradient(45deg, #0ff, #f0f, #ff0);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .library-window {
+        background: rgba(10, 10, 10, 0.2);
+        border-radius: 15px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        overflow: hidden;
+        position: relative;
+        padding: 2rem;
+    }
+
+    .library-window::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.1) 0px,
+            rgba(0, 0, 0, 0.1) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .scanline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            rgba(255, 255, 255, 0.7),
+            transparent
+        );
+        animation: scanline 8s linear infinite;
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
     .genre-section {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-bottom: 30px;
-        padding: 20px;
+        margin-bottom: 3rem;
     }
+
     .genre-header {
-        background-color: #3498db;
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+        background: linear-gradient(45deg, rgba(13, 110, 253, 0.3), rgba(0, 255, 255, 0.1));
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
         display: flex;
         align-items: center;
+        justify-content: space-between;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
+
     .genre-header h2 {
+        color: #0ff;
         margin: 0;
-        font-weight: bold;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
+
     .song-card {
-        border: none;
-        border-radius: 12px;
+        background: rgba(33, 37, 41, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: 15px;
         overflow: hidden;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
     }
-    .song-card-img {
-        height: 250px;
-        object-fit: cover;
+
+    .song-card:hover {
+        transform: translateY(-5px);
     }
-    .song-details {
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        padding: 15px;
-        margin-top: 15px;
-    }
+
     .detail-section {
-        background-color: #ffffff;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 15px;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
     }
-    .like-user-list {
-        max-height: 200px;
-        overflow-y: auto;
+
+    .detail-section h4 {
+        color: #0ff;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+
+    .detail-section p {
+        color: rgba(255, 255, 255, 0.8);
+        margin-bottom: 0.5rem;
+    }
+
+    .detail-section strong {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    img {
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+    }
+
+    .user-info-container {
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+    
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        flex-shrink: 0;
+        position: relative;
+    }
+    
+    .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid rgba(0, 255, 255, 0.3);
+    }
+    
+    .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: rgba(0, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(0, 255, 255, 0.3);
+    }
+    
+    .avatar-placeholder i {
+        font-size: 2rem;
+        color: rgba(0, 255, 255, 0.5);
+    }
+    
+    .user-details h4 {
+        font-size: 1.1rem;
+    }
+    
+    .user-data {
+        font-size: 0.9rem;
+    }
+    
+    .user-data p {
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .user-data i {
+        width: 20px;
+        text-align: center;
+        color: rgba(0, 255, 255, 0.7);
+    }
+    
+    .role-badge {
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        color: #0ff;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
     }
 </style>
 {% endblock %}
+
 {% block contenido %}
-<div class="container-fluid py-4">
-    <h1 class="text-center mb-5" style="color: #2c3e50;">Canciones por Género</h1>
-{% if error %}
-<div class="alert alert-danger" role="alert">
-    {{ error }}
-</div>
-{% endif %}
+<div class="container-star">
+    <div class="stars"></div>
+    <div class="container-fluid py-5">
+        <div class="screen-container">
+            <div class="library-window">
+                <div class="scanline"></div>
+                <h1 class="text-center text-info mb-5">Canciones por Género</h1>
 
-{% if canciones %}
-    {% regroup canciones by etiqueta_display as canciones_por_genero %}
-    
-    {% for genero in canciones_por_genero %}
-        <div class="genre-section">
-            <div class="genre-header">
-                <h2 class="flex-grow-1">{{ genero.grouper }}</h2>
-                <span class="badge bg-light text-dark">{{ genero.list|length }} Canciones</span>
-            </div>
+                {% if error %}
+                <div class="alert alert-danger bg-dark border-danger mb-4">
+                    {{ error }}
+                </div>
+                {% endif %}
 
-            <div class="row">
-                {% for cancion in genero.list %}
-                <div class="col-12 mb-4">
-                    <div class="card song-card">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                {% if cancion.portada %}
-                                <img src="{{ cancion.portada.url }}" class="img-fluid song-card-img" alt="{{ cancion.titulo }}">
-                                {% else %}
-                                <div class="bg-secondary text-white text-center py-5">
-                                    <h3>{{ cancion.titulo }}</h3>
-                                </div>
-                                {% endif %}
+                {% if canciones %}
+                    {% regroup canciones by etiqueta_display as canciones_por_genero %}
+                    
+                    {% for genero in canciones_por_genero %}
+                        <div class="genre-section">
+                            <div class="genre-header">
+                                <h2>{{ genero.grouper }}</h2>
+                                <span class="badge genre-badge">{{ genero.list|length }} Canciones</span>
                             </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h2 class="card-title">{{ cancion.titulo }}</h2>
+
+                            <div class="row">
+                                {% for cancion in genero.list %}
+                                <div class="col-12 mb-4">
+                                    <div class="song-card">
+                                        <div class="row g-0">
+                                            <div class="col-md-4 p-3">
+                                                {% if cancion.portada_url %}
+                                                    <img src="{{ cancion.portada_url }}" 
+                                                         alt="Portada de {{ cancion.titulo }}"
+                                                         class="img-fluid rounded">
+                                                {% endif %}
+                                                
+                                                {% if cancion.archivo_audio_url %}
+                                                    <div class="cyber-audio-player w-100 mt-3">
+                                                        <audio id="audio-{{ cancion.id }}" src="{{ cancion.archivo_audio_url }}" preload="metadata"></audio>
+                                                        
+                                                        <div class="cyber-player-container">
+                                                            <!-- Botón Play/Pause -->
+                                                            <button class="cyber-play-btn" onclick="togglePlay(this)" data-audio-id="{{ cancion.id }}">
+                                                                <i class="fas fa-play"></i>
+                                                            </button>
+                                                            
+                                                            <!-- Tiempo actual y duración -->
+                                                            <div class="cyber-time-display">
+                                                                <span class="cyber-current-time">0:00</span>
+                                                                <span class="cyber-duration">0:00</span>
+                                                            </div>
+                                                            
+                                                            <!-- Barra de progreso -->
+                                                            <div class="cyber-progress-container">
+                                                                <div class="cyber-progress-bar">
+                                                                    <div class="cyber-progress"></div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Control de volumen -->
+                                                            <div class="cyber-volume-container">
+                                                                <i class="fas fa-volume-up cyber-volume-icon"></i>
+                                                                <div class="cyber-volume-slider">
+                                                                    <div class="cyber-volume-progress"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-8">
+                                                <div class="card-body">
                                     
-                                    <div class="detail-section">
-                                        <h4>Información Básica</h4>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <p><strong>Artista:</strong> {{ cancion.artista }}</p>
-                                                <p><strong> Album:</strong> {{cancion.album_titulo}}</p>
-                                                <p><strong>Género:</strong> {{ cancion.etiqueta_display }}</p>
-                                                <p><strong>Fecha de Subida:</strong> {{ cancion.fecha_subida }}</p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p><strong>Total de Likes:</strong> {{ cancion.likes|length }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                                    
+                                                    <div class="detail-section">
+                                                        <h4>Información Básica</h4>
+                
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <h2 class="text-info mb-4">{{ cancion.titulo }}</h2>
+                                                                <p><i class="fas fa-user me-2"></i><strong>Artista:</strong> {{ cancion.artista }}</p>
+                                                                <p><i class="fas fa-compact-disc me-2"></i><strong>Album:</strong> {{cancion.album_titulo}}</p>
+                                                                <p><i class="fas fa-music me-2"></i><strong>Género:</strong> {{ cancion.etiqueta_display }}</p>
+                                                                <p><i class="fas fa-calendar me-2"></i><strong>Fecha:</strong> {{ cancion.fecha_subida }}</p>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <p><i class="fas fa-heart me-2"></i><strong>Likes:</strong> {{ cancion.likes|length }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                    <div class="detail-section">
-                                        <h4>Información del Usuario</h4>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <p><strong>Nombre de Usuario:</strong> {{ cancion.usuario.nombre_usuario }}</p>
-                                                <p><strong>Email:</strong> {{ cancion.usuario.email }}</p>
-                                                <p><strong>Ciudad:</strong> {{ cancion.usuario.ciudad }}</p>
-                                                <p><strong>Rol:</strong> {{ cancion.usuario.rol_display }}</p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                {% if cancion.usuario.foto_perfil %}
-                                                <img src="{{ cancion.usuario.foto_perfil.url }}" class="img-fluid rounded" alt="Foto de Perfil">
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
+                                                    <div class="detail-section">
+                                                        <div class="user-info-container d-flex align-items-start gap-3">
+                                                            <!-- Foto de perfil -->
+                                                            <div class="user-avatar">
+                                                                {% if cancion.usuario.foto_perfil %}
+                                                                    <img src="{{ cancion.usuario.foto_perfil_url }}" alt="Foto de Perfil">
+                                                                {% else %}
+                                                                    <div class="avatar-placeholder">
+                                                                        <i class="fas fa-user"></i>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                    
+                                                            <!-- Información del usuario -->
+                                                            <div class="user-details flex-grow-1">
+                                                                <h4 class="text-info mb-3">
+                                                                    <i class="fas fa-user-circle me-2"></i>Información del Usuario
+                                                                </h4>
+                                                                <div class="user-data">
+                                                                    <p class="mb-2">
+                                                                        <i class="fas fa-user me-2"></i>
+                                                                        <strong>Usuario:</strong> 
+                                                                        <span class="text-white-50">{{ cancion.usuario.nombre_usuario }}</span>
+                                                                    </p>
+                                                                    <p class="mb-2">
+                                                                        <i class="fas fa-envelope me-2"></i>
+                                                                        <strong>Email:</strong> 
+                                                                        <span class="text-white-50">{{ cancion.usuario.email }}</span>
+                                                                    </p>
+                                                                    <p class="mb-2">
+                                                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                                                        <strong>Ciudad:</strong> 
+                                                                        <span class="text-white-50">{{ cancion.usuario.ciudad|default:"No especificada" }}</span>
+                                                                    </p>
+                                                                    <p class="mb-0">
+                                                                        <i class="fas fa-user-tag me-2"></i>
+                                                                        <strong>Rol:</strong> 
+                                                                        <span class="badge role-badge">{{ cancion.usuario.rol_display }}</span>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-                                    {% if cancion.album %}
-                                    <div class="detail-section">
-                                        <h4>Información del Álbum</h4>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <p><strong>Álbum:</strong> {{ cancion.album.titulo }}</p>
-                                                <p><strong>Artista del Álbum:</strong> {{ cancion.album.artista }}</p>
-                                                <p><strong>Fecha de Subida del Álbum:</strong> {{ cancion.album.fecha_subida }}</p>
-                                                
-                                                {% if cancion.album.portada %}
-                                                <img src="{{ cancion.album.portada.url }}" class="img-fluid rounded" alt="Portada del Álbum">
-                                                {% endif %}
-                                            </div>
-                                            <div class="col-md-6">
-                                                {% if cancion.album.detalle_album %}
-                                                <p><strong>Productor:</strong> {{ cancion.album.detalle_album.productor }}</p>
-                                                <p><strong>Estudio de Grabación:</strong> {{ cancion.album.detalle_album.estudio_grabacion }}</p>
-                                                <p><strong>Número de Pistas:</strong> {{ cancion.album.detalle_album.numero_pistas }}</p>
-                                                <p><strong>Sello Discográfico:</strong> {{ cancion.album.detalle_album.sello_discografico }}</p>
-                                                <p><strong>Comentarios del Álbum:</strong> {{ cancion.album.detalle_album.numero_comentarios }}</p>
-                                                {% endif %}
-                                                
-                                                {% if cancion.album.estadisticasalbum %}
-                                                <h5>Estadísticas del Álbum</h5>
-                                                <p><strong>Reproducciones:</strong> {{ cancion.album.estadisticasalbum.reproducciones }}</p>
-                                                <p><strong>Likes:</strong> {{ cancion.album.estadisticasalbum.likes }}</p>
-                                                <p><strong>Comentarios:</strong> {{ cancion.album.estadisticasalbum.comentarios }}</p>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endif %}
+                                                    {% if cancion.album %}
+                                                    <div class="detail-section">
+                                                        <h4>Información del Álbum</h4>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <p><i class="fas fa-compact-disc me-2"></i><strong>Álbum:</strong> {{ cancion.album.titulo }}</p>
+                                                                <p><i class="fas fa-user me-2"></i><strong>Artista:</strong> {{ cancion.album.artista }}</p>
+                                                                <p><i class="fas fa-calendar me-2"></i><strong>Fecha:</strong> {{ cancion.album.fecha_subida }}</p>
+                                                                
+                                                                {% if cancion.album.portada %}
+                                                                <img src="{{ cancion.album.portada.url }}" class="img-fluid rounded mt-2" alt="Portada del Álbum">
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                {% if cancion.album.detalle_album %}
+                                                                <p><i class="fas fa-user-tie me-2"></i><strong>Productor:</strong> {{ cancion.album.detalle_album.productor }}</p>
+                                                                <p><i class="fas fa-microphone-alt me-2"></i><strong>Estudio:</strong> {{ cancion.album.detalle_album.estudio_grabacion }}</p>
+                                                                <p><i class="fas fa-list-ol me-2"></i><strong>Pistas:</strong> {{ cancion.album.detalle_album.numero_pistas }}</p>
+                                                                <p><i class="fas fa-record-vinyl me-2"></i><strong>Sello:</strong> {{ cancion.album.detalle_album.sello_discografico }}</p>
+                                                                {% endif %}
+                                                                
+                                                                {% if cancion.album.estadisticasalbum %}
+                                                                <div class="mt-3">
+                                                                    <h5 class="text-info mb-2">Estadísticas</h5>
+                                                                    <p><i class="fas fa-play me-2"></i><strong>Reproducciones:</strong> {{ cancion.album.estadisticasalbum.reproducciones }}</p>
+                                                                    <p><i class="fas fa-heart me-2"></i><strong>Likes:</strong> {{ cancion.album.estadisticasalbum.likes }}</p>
+                                                                    <p><i class="fas fa-comments me-2"></i><strong>Comentarios:</strong> {{ cancion.album.estadisticasalbum.comentarios }}</p>
+                                                                </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
 
-                                    {% if cancion.detalles %}
-                                    <div class="detail-section">
-                                        <h4>Detalles de la Canción</h4>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <p><strong>Letra:</strong> {{ cancion.detalles.letra|default:"No disponible" }}</p>
-                                                <p><strong>Créditos:</strong> {{ cancion.detalles.creditos|default:"No disponible" }}</p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p><strong>Duración:</strong> {{ cancion.detalles.duracion_formateada }}</p>
-                                                <p><strong>Idioma:</strong> {{ cancion.detalles.idioma|default:"No especificado" }}</p>
+                                                    {% if cancion.detalles %}
+                                                    <div class="detail-section">
+                                                        <h4>Detalles de la Canción</h4>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <p><i class="fas fa-align-left me-2"></i><strong>Letra:</strong> {{ cancion.detalles.letra|default:"No disponible" }}</p>
+                                                                <p><i class="fas fa-certificate me-2"></i><strong>Créditos:</strong> {{ cancion.detalles.creditos|default:"No disponible" }}</p>
+                                                                <p><i class="fas fa-clock me-2"></i><strong>Duración:</strong> {{ cancion.detalles.duracion_formateada }}</p>
+                                                                <p><i class="fas fa-language me-2"></i><strong>Idioma:</strong> {{ cancion.detalles.idioma|default:"No especificado" }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    {% endif %}
-
-                                    {% if cancion.likes %}
-                                    <div class="detail-section">
-                                        <h4>Usuarios que dieron Like</h4>
-                                        <div class="like-user-list">
-                                            <ul class="list-group">
-                                                {% for like in cancion.likes %}
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    {{ like.usuario.nombre_usuario }}
-                                                    <span class="text-muted">{{ like.fecha_like }}</span>
-                                                </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    {% endif %}
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info bg-dark text-info">
+                        No hay canciones disponibles en este momento.
                     </div>
-                </div>
-                {% endfor %}
+                {% endif %}
             </div>
         </div>
-    {% endfor %}
-{% else %}
-    <div class="col-12">
-        <div class="alert alert-info text-center" role="alert">
-            No hay canciones disponibles en este momento.
-        </div>
     </div>
-{% endif %}
 </div>
+{% endblock %}
+{% block extra_script %}
+<script src="{% static 'js/reproductor.js' %}"></script>
 {% endblock %}

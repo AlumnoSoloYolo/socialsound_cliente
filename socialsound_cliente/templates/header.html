@@ -1,0 +1,59 @@
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/header.css' %}">
+{% endblock %}
+
+<nav class="navbar navbar-expand-lg">
+    
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'images/Logo.png' %}" alt="Logo" class="logo">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+         
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_usuarios_completa' %}">
+                            <i class="fa-brands fa-searchengin nav-icon"></i>
+                            <span class="nav-tooltip">Ver todos los usuarios</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_canciones'%}">
+                            <i class="fas fa-meteor"></i>
+                            <span class="nav-tooltip">Ver canciones</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_albumes_usuario' 'DavidBowie' %}">
+                            <i class="fa-solid fa-shuttle-space nav-icon"></i>
+                            <span class="nav-tooltip">Ver álbumes David Bowie</span>
+                        </a>
+                    </li>
+
+                
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_playlists' %}">
+                            <i class="fa-solid fa-newspaper nav-icon"></i>
+                            <span class="nav-tooltip">Ver playlists</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'canciones_por_genero_api' %}">
+                            <i class="fa-solid fa-satellite-dish nav-icon"></i>
+                            <span class="nav-tooltip">Ver géneros</span>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</nav>

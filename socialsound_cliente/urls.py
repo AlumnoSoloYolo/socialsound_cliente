@@ -4,6 +4,7 @@ from .views import *
 
 
 urlpatterns = [
+     path('', index, name="index"),
      path('playlists/', lista_playlists_api, name='lista_playlists'),
      path('usuarios/<str:nombre_usuario>/albumes/', lista_albumes_usuario_api, name='lista_albumes_usuario'),
      path('usuarios/lista_usuarios_completa/', lista_usuarios_completa_api, name="lista_usuarios_completa"),

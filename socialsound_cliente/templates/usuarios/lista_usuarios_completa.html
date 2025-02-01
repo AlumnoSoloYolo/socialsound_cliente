@@ -1,29 +1,82 @@
 {% extends 'principal.html' %}
 {% load static %}
 
-{% block custom_css %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/fondo_estrella.css' %}">
 <style>
-    /* Estilos personalizados */
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
+    @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(100%); }
+    }
+
+    .screen-container {
+        position: relative;
+        width: 100%;
+        border-radius: 15px;
+        padding: 3px;
+        background: linear-gradient(45deg, rgba(0,0,0,0.5), rgba(255,255,255,0.1));
+    }
+
+    .screen-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 15px;
+        padding: 2px;
+        background: linear-gradient(45deg, #0ff, #f0f, #ff0);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .users-window {
+        background: rgba(10, 10, 10, 0.2);
+        border-radius: 15px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        overflow: hidden;
+        position: relative;
         padding: 2rem;
     }
 
-    h1 {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #2d3748;
-        margin-bottom: 2rem;
+    .users-window::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.1) 0px,
+            rgba(0, 0, 0, 0.1) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+        pointer-events: none;
+        opacity: 0.3;
     }
 
-    .error {
-        background-color: #fff5f5;
-        border: 1px solid #fc8181;
-        color: #c53030;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin-bottom: 1rem;
+    .scanline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            rgba(255, 255, 255, 0.7),
+            transparent
+        );
+        animation: scanline 8s linear infinite;
+        pointer-events: none;
+        opacity: 0.3;
     }
 
     .user-grid {
@@ -33,216 +86,225 @@
     }
 
     .user-card {
-        background-color: #fff;
-        border-radius: 0.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background: rgba(33, 37, 41, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: 15px;
         overflow: hidden;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    img{
-        display:block;
-        width: 100px;
-        height: 100px;
+        transition: transform 0.3s ease;
     }
 
     .user-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
 
     .user-header {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        background: linear-gradient(to right, #4299e1, #9f7aea);
+        background: rgba(13, 110, 253, 0.3);
         padding: 1.5rem;
-        border-top-left-radius: 0.5rem;
-        border-top-right-radius: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .user-header img {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
-        border: 4px solid #fff;
+        object-fit: cover;
         margin-right: 1rem;
+        border: 2px solid rgba(0, 255, 255, 0.3);
     }
 
-    .user-header h2 {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #fff;
+    .user-initials {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(0, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        border: 2px solid rgba(0, 255, 255, 0.3);
     }
 
-    .user-header p {
-        color: #fff;
-        opacity: 0.9;
+    .user-role {
+        position: absolute;
+        top: 0;
+        right: 1rem;
     }
 
-    .user-header span {
-        padding: 0.5rem 1rem;
-        border-radius: 9999px;
-        font-weight: bold;
-        font-size: 0.875rem;
-    }
+    .role-1 { background: rgba(40, 167, 69, 0.3); }
+    .role-2 { background: rgba(0, 123, 255, 0.3); }
+    .role-3 { background: rgba(220, 53, 69, 0.3); }
 
     .user-info {
         padding: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .user-info h3 {
-        font-size: 1.25rem;
-        font-weight: semibold;
+    .followers, .following {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        border-radius: 10px;
         margin-bottom: 1rem;
     }
 
-    .user-info .followers,
-    .user-info .following {
-        background-color: #f7fafc;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        max-height: 240px;
-        overflow-y: auto;
-    }
-
-    .user-info .follower,
-    .user-info .followed {
+    .follower, .followed {
         display: flex;
         align-items: center;
-        background-color: #fff;
-        padding: 0.5rem;
-        border-radius: 0.375rem;
         margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
     }
 
-    .user-info .follower img,
-    .user-info .followed img {
-        width: 32px;
-        height: 32px;
+    .follower img, .followed img {
+        width: 30px;
+        height: 30px;
         border-radius: 50%;
         margin-right: 0.5rem;
     }
 
-    .user-info .follower span,
-    .user-info .followed span {
-        font-size: 0.875rem;
-        color: #718096;
-        margin-left: auto;
+    .user-details {
+        padding: 1.5rem;
     }
 
-    .user-details {
-        padding: 1rem 1.5rem;
-        text-align: right;
+    h1 {
+        color: #0ff;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    h2 {
+        color: white;
+        font-size: 1.25rem;
+        margin: 0;
+    }
+
+    h3 {
+        color: #0ff;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0.25rem 0;
+    }
+
+    .role-1, .role-2, .role-3 {
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        color: white;
         font-size: 0.875rem;
-        color: #718096;
     }
 </style>
 {% endblock %}
 
 {% block contenido %}
-<div class="container">
-    <h1>Usuarios de SocialSound</h1>
+<div class="container-star">
+    <div class="stars"></div>
+    <div class="container py-5">
+        <div class="screen-container">
+            <div class="users-window">
+                <div class="scanline"></div>
+                <h1>Usuarios de SocialSound</h1>
 
-  {% if error %}
-    <div class="error">
-        {{ error }}
-    </div>
-    {% endif %}
-
-    {% if usuarios %}
-    <div class="user-grid">
-        {% for usuario in usuarios %}
-        <div class="user-card">
-            <!-- Cabecera del Usuario -->
-            <div class="user-header">
-                <div class="flex items-center">
-                    {% if usuario.foto_perfil %}
-                    <img src="{{ usuario.foto_perfil }}" alt="{{ usuario.nombre_usuario }}">
-                    {% else %}
-                    <div class="user-initials">
-                        <span>{{ usuario.nombre_usuario }}</span>
-                    </div>
-                    {% endif %}
-                    <div>
-                        <h2>{{ usuario.nombre_usuario }}</h2>
-                        <p>{{ usuario.email }}</p>
-                        {% if usuario.ciudad %}
-                        <p>📍 {{ usuario.ciudad }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="user-role">
-                        <span class="role-{{ usuario.rol }}">
-                            {{ usuario.rol_display }}
-                        </span>
-                    </div>
+                {% if error %}
+                <div class="alert alert-danger mb-4">
+                    {{ error }}
                 </div>
-            </div>
+                {% endif %}
 
-            <!-- Seguidores y Seguidos -->
-            <div class="user-info">
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="followers">
-                        <h3>Seguidores ({{ usuario.seguidores_count }})</h3>
-                        {% if usuario.seguidores %}
-                        <div>
-                            {% for seguidor in usuario.seguidores %}
-                            <div class="follower">
-                                {% if seguidor.seguidor.foto_perfil %}
-                                <img src="{{ seguidor.seguidor.foto_perfil }}" alt="{{ seguidor.seguidor.nombre_usuario }}">
+                {% if usuarios %}
+                <div class="user-grid">
+                    {% for usuario in usuarios %}
+                    <div class="user-card">
+                        <div class="user-header">
+                            <div class="d-flex position-relative">
+                                {% if usuario.foto_perfil %}
+                                <img src="{{ usuario.foto_perfil_url }}" alt="{{ usuario.nombre_usuario }}">
                                 {% else %}
                                 <div class="user-initials">
-                                    <span>{{ seguidor.seguidor.nombre_usuario }}</span>
+                                    <span class="text-white">{{ usuario.nombre_usuario }}</span>
                                 </div>
                                 {% endif %}
-                           
-                                <span>Desde {{ seguidor.fecha_inicio }}</span>
+                                <div>
+                                    <h2>{{ usuario.nombre_usuario }}</h2>
+                                    <p>{{ usuario.email }}</p>
+                                    {% if usuario.ciudad %}
+                                    <p><i class="fas fa-map-marker-alt"></i> {{ usuario.ciudad }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="user-role">
+                                    <span class="role-{{ usuario.rol }}">
+                                        {{ usuario.rol_display }}
+                                    </span>
+                                </div>
                             </div>
-                            {% endfor %}
                         </div>
-                        {% else %}
-                        <p>No tiene seguidores aún</p>
-                        {% endif %}
-                    </div>
 
-                    <!-- Lista de Seguidos -->
-                    <div class="following">
-                        <h3>Seguidos ({{ usuario.seguidos_count }})</h3>
-                        {% if usuario.seguidos %}
-                        <div>
-                            {% for seguido in usuario.seguidos %}
-                            <div class="followed">
-                                {% if seguido.seguido.foto_perfil %}
-                                <img src="{{ seguido.seguido.foto_perfil }}" alt="{{ seguido.seguido.nombre_usuario }}">
-                                {% else %}
-                                <div class="user-initials">
-                                    <span>{{ seguido.seguido.nombre_usuario }}</span>
+                        <div class="user-info">
+                            <div class="g-3">
+                                <div class="row-md-12">
+                                    <div class="followers">
+                                        <h3>Seguidores ({{ usuario.seguidores_count }})</h3>
+                                        {% if usuario.seguidores %}
+                                        <div style="max-height: 150px; overflow-y: auto;">
+                                            {% for seguidor in usuario.seguidores %}
+                                            <div class="follower">
+                                     
+                                                <img src="{{ seguidor.seguidor.foto_perfil_url }}" alt="{{ seguidor.seguidor.nombre_usuario }}">
+
+                                                <p class="text-white">{{ seguidor.seguidor.nombre_usuario }}</p>
+                                             
+                                               
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        <p class="text-white">No tiene seguidores aún</p>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                {% endif %}
-                             
-                                <span>Desde {{ seguido.fecha_inicio }}</span>
+
+                                <div class="row-md-12">
+                                    <div class="following">
+                                        <h3>Seguidos ({{ usuario.seguidos_count }})</h3>
+                                        {% if usuario.seguidos %}
+                                        <div style="max-height: 150px; overflow-y: auto;">
+                                            {% for seguido in usuario.seguidos %}
+                                            <div class="followed">
+                                                <img src="{{ seguido.seguido.foto_perfil_url }}" alt="{{ seguido.seguido.nombre_usuario }}">
+
+                                                <p class="text-white">{{ seguido.seguido.nombre_usuario }}</p>
+    
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% else %}
+                                        <p class="text-white">No sigue a nadie aún</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                            {% endfor %}
                         </div>
-                        {% else %}
-                        <p>No sigue a nadie aún</p>
-                        {% endif %}
+
+                        <div class="user-details">
+                            <p><strong>Fecha de Nacimiento:</strong> {{ usuario.fecha_nac }}</p>
+                            <p><strong>Biografía:</strong> {{ usuario.bio|default:"Sin biografía" }}</p>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-            </div>
-
-            <!-- Información adicional -->
-            <div class="user-details">
-                <p>Fecha de Nacimiento: {{ usuario.fecha_nac }}</p>
-                <p>Biografía: {{ usuario.bio }}</p>
+                {% else %}
+                <div class="alert alert-info">
+                    <p class="mb-0">No hay usuarios para mostrar.</p>
+                </div>
+                {% endif %}
             </div>
         </div>
-        {% endfor %}
     </div>
-    {% else %}
-    <div class="no-users">
-        <p>No hay usuarios para mostrar.</p>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}

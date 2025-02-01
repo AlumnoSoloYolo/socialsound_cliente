@@ -5,14 +5,17 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+from dotenv import load_dotenv 
+load_dotenv()
+
 import os
 import environ
-from dotenv import load_dotenv  
+ 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# Cargar variables de entorno
-load_dotenv()
+
 
 OAUTH_TOKENS = {
     1: env('OAUTH_TOKEN_CLIENTE'),
@@ -23,6 +26,8 @@ AUTH_TOKEN = env('AUTH_TOKEN_ADMIN')
 
 
 API_BASE_URL = os.getenv('API_BASE_URL')
+
+API_MEDIA_URL = 'https://lolosoloyolo.pythonanywhere.com/'
 
 
 
