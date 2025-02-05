@@ -1,0 +1,32 @@
+{% extends 'principal.html' %}
+
+{% block contenido %}
+<div class="container mt-4">
+   <form method="GET" action="{% url 'busqueda_usuarios' %}" class="mb-4">
+       <div class="input-group">
+           <input type="text" name="textoBusqueda" class="form-control" placeholder="Buscar usuarios..." required>
+           <button type="submit" class="btn btn-primary">Buscar</button>
+       </div>
+   </form>
+
+   <div class="row">
+       {% for usuario in usuarios_mostrar %}
+           <div class="col-md-4 mb-4">
+               <div class="card">
+                   <img src="{{ usuario.foto_perfil }}" class="card-img-top">
+                   <div class="card-body">
+                       <h5>{{ usuario.nombre_usuario }}</h5>
+                       <p>{{ usuario.ciudad }}</p>
+                       <p class="text-muted">{{ usuario.rol_display }}</p>
+                       <div class="mt-2">
+                           <span class="badge bg-primary">Seguidores: {{ usuario.seguidores_count }}</span>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       {% empty %}
+           <p>No se encontraron usuarios</p>
+       {% endfor %}
+   </div>
+</div>
+{% endblock %}

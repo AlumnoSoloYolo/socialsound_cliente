@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import requests
 from django.conf import settings
+from .forms import BusquedaUsuarioForm
 
 
 
@@ -28,7 +29,7 @@ def lista_playlists_api(request):
  
 def lista_albumes_usuario_api(request, nombre_usuario):
 
-    headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[2]}'}
+    headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'}
     response = requests.get(f"{settings.API_BASE_URL}{nombre_usuario}/albumes", headers=headers)
     albumes = response.json()
     for album in albumes:
@@ -51,7 +52,7 @@ def lista_albumes_usuario_api(request, nombre_usuario):
 
 def lista_usuarios_completa_api(request):
 
-    headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[2]}'}
+    headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'}
     url = f"{settings.API_BASE_URL}usuarios/lista_usuarios_completa/"    
     response = requests.get(url, headers=headers)
   
@@ -137,7 +138,32 @@ def canciones_por_genero_api(request):
         return render(request, 'canciones/canciones_genero.html', {
             'error': f"Error {response.status_code}: {response.text}"
         })
-            
+    
+
+
+# BÚSQUEDAS AVANZADAS
+
+def crear_cabecera():
+    return {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'}
+
+
+def busqueda_usuarios_api(request):
+    formulario = BusquedaUsuarioForm(request.GET)
+    if formulario.is_valid():  
+        headers = crear_cabecera()     
+        response = requests.get(
+            f"{settings.API_BASE_URL}usuarios/busqueda_simple/",
+            headers=headers,
+            params=formulario.cleaned_data    
+        )
+
+        
+        usuarios = response.json()
+        return render(request, "usuarios/busqueda_usuarios.html", {"usuarios_mostrar": usuarios})
+    if("HTTP_REFERER" in request.META):
+        return redirect(request.META("HTTP_REFERER"))
+    else:
+        return redirect("index")
  
 
    
