@@ -1,75 +1,27 @@
-    {% extends 'principal.html' %}
+{% extends 'principal.html' %}
+
+{% block contenido %}
+
+   <div class="row">
     
-    {% block custom_css %}
-
-        <style>
-    
-        .usuario {
-            border: 1px solid #ddd;
-            margin: 20px;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .album {
-            margin-left: 20px;
-            padding: 10px;
-            border-left: 3px solid #4CAF50;
-            margin-top: 10px;
-        }
-        .canciones {
-            margin-left: 40px;
-            padding: 5px;
-        }
-        img {
-            display: block;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-        }
-
-    </style>
-    
-    {% endblock %}
-
-    {% block contenido %}
- 
-    {% if lista_usuarios %}
-        {% for usuario in lista_usuarios %}
-            <div class="usuario">
-                <h2>{{usuario.nombre_usuario}}</h2>
-                <p>{{usuario.email}}</p>
-                {% if usuario.foto_perfil %}
-                    <img src="http://127.0.0.1:8082{{usuario.foto_perfil}}" 
-                         alt="Foto de perfil de {{usuario.nombre_usuario}}">
-                {% endif %}
-
-                {% if usuario.albumes %}
-                    <h3>Álbumes:</h3>
-                    {% for album in usuario.albumes %}
-                        <div class="album">
-                            <h4>{{album.titulo}}</h4>
-                            <p>Artista: {{album.artista}}</p>
-                            
-                            {% if album.canciones %}
-                                <div class="canciones">
-                                    <h5>Canciones:</h5>
-                                    <ul>
-                                        {% for cancion in album.canciones %}
-                                            <li>{{cancion.titulo}} - {{cancion.artista}}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% else %}
-                                <p>No hay canciones en este álbum</p>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>El usuario no tiene álbumes</p>
-                {% endif %}
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No hay usuarios para mostrar</p>
-    {% endif %}
+       {% for usuario in usuarios_mostrar %}
+           <div class="col-md-4 mb-4">
+               <div class="card">
+                   <img src="{{ usuario.foto_perfil_url }}" class="card-img-top">
+                   <div class="card-body">
+                       <h5>{{ usuario.nombre_usuario }}</h5>
+                       <p>{{ usuario.ciudad }}</p>
+                       <p class="text-muted">{{ usuario.rol_display }}</p>
+                       <div class="mt-2">
+                           <span class="badge bg-primary">Seguidores: {{ usuario.seguidores_count }}</span>
+                           <span class="badge bg-primary">Seguidos: {{ usuario.seguidos_count }}</span>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       {% empty %}
+           <p>No se encontraron usuarios</p>
+       {% endfor %}
+   </div>
+</div>
 {% endblock %}

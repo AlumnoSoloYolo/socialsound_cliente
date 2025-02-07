@@ -16,10 +16,31 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
+
+
+            
+            <form method="GET" action="{% url 'busqueda_usuarios' %}" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="textoBusqueda" class="form-control" placeholder="Buscar usuarios..." required>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                </div>
+            </form>
+     
+
             <ul class="navbar-nav ms-auto align-items-center">
-         
+
+
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'usuarios_busqueda_avanzada' %}">
+                        <i class="fa-brands fa-searchengin nav-icon"></i>
+                        <span class="nav-tooltip">Buscar usuarios</span>
+                    </a>
+                </li>
+
+
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'busqueda_usuarios' %}">
+                        <a class="nav-link" href="{% url 'lista_usuarios_completa' %}">
                             <i class="fa-brands fa-searchengin nav-icon"></i>
                             <span class="nav-tooltip">Buscar usuarios</span>
                         </a>

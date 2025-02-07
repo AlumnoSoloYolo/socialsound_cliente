@@ -1,0 +1,36 @@
+{% extends "principal.html" %}
+{% load django_bootstrap5 %}
+{% block contenido %}
+
+
+
+    <form action="{% url 'usuarios_busqueda_avanzada' %}" method="GET"> 
+        
+        {% csrf_token %}
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.nombre_usuario show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.ciudad show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.edad_min show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.edad_max show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.bio_contains show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_button "Buscar" button_type="submit" button_class="btn-primary" %}
+        </div>
+    </form>
+
+{% endblock %}
