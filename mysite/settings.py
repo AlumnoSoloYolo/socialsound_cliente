@@ -26,8 +26,12 @@ AUTH_TOKEN = env('AUTH_TOKEN_ADMIN')
 
 
 API_BASE_URL = os.getenv('API_BASE_URL')
+API_VERSION = os.getenv('API_VERSION')
 
-API_MEDIA_URL = 'https://lolosoloyolo.pythonanywhere.com/'
+
+API_URL = f'{API_BASE_URL}{API_VERSION}'
+
+API_MEDIA_URL = env('API_MEDIA_URL')
 
 
 

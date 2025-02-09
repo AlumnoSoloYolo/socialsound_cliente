@@ -1,0 +1,60 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Resultados de la búsqueda</h2>
+
+    {% if canciones_mostrar %}
+    <div class="row">
+        {% for cancion in canciones_mostrar %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if cancion.portada %}
+                <img src="{{ cancion.portada }}" class="card-img-top" alt="Portada de {{ cancion.titulo }}">
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title">{{ cancion.titulo }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ cancion.artista }}</h6>
+                    
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Subido por: {{ cancion.usuario.nombre_usuario }} <br>
+                            Fecha: {{ cancion.fecha_subida }}
+                            {% if cancion.album_titulo %}
+                            <br>Álbum: {{ cancion.album_titulo }}
+                            {% endif %}
+                        </small>
+                    </p>
+
+                    {% if cancion.detalles %}
+                    <div class="mt-2">
+                        <small>
+                            Duración: {{ cancion.detalles.duracion_formateada }}
+                            {% if cancion.detalles.idioma %}
+                            <br>Idioma: {{ cancion.detalles.idioma }}
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-2">
+                        <span class="badge bg-primary">{{ cancion.etiqueta_display }}</span>
+                        <small class="text-muted">
+                            ❤️ {{ cancion.likes|length }}
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No se encontraron canciones que coincidan con tu búsqueda.
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

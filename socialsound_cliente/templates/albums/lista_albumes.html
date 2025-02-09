@@ -1,0 +1,53 @@
+{% extends "principal.html" %}
+{% block contenido %}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Resultados de la búsqueda</h2>
+
+    {% if albumes_mostrar %}
+    <div class="row">
+        {% for album in albumes_mostrar %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if album.portada %}
+                <img src="{{ album.portada_url }}" class="card-img-top" alt="Portada de {{ album.titulo }}">
+                {% endif %}
+                
+                <div class="card-body">
+                    <h5 class="card-title">{{ album.titulo }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ album.artista }}</h6>
+                    
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Subido por: {{ album.usuario.nombre_usuario }} <br>
+                            Fecha: {{ album.fecha_subida }}
+                        </small>
+                    </p>
+
+                    {% if album.descripcion %}
+                    <p class="card-text">{{ album.descripcion|truncatechars:100 }}</p>
+                    {% endif %}
+
+                    {% if album.detalle_album %}
+                    <div class="mt-2">
+                        <small>
+                            Pistas: {{ album.detalle_album.numero_pistas }} <br>
+                            Comentarios: {{ album.detalle_album.numero_comentarios }}
+                        </small>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        No se encontraron álbumes que coincidan con tu búsqueda.
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

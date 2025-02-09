@@ -13,6 +13,7 @@
                        <p>{{ usuario.ciudad }}</p>
                        <p class="text-muted">{{ usuario.rol_display }}</p>
                        <div class="mt-2">
+                        <span class="badge bg-primary">Publicaciones: {{ usuario.albumes.count}}</span>
                            <span class="badge bg-primary">Seguidores: {{ usuario.seguidores_count }}</span>
                            <span class="badge bg-primary">Seguidos: {{ usuario.seguidos_count }}</span>
                        </div>

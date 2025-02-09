@@ -2,79 +2,102 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/header.css' %}">
+<style>
+  .search-form {
+    width: 300px;
+    margin-right: 50px;
+  }
+  
+  .search-input {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(0, 0, 0);
+    color: black;
+  }
+  
+  .search-input::placeholder {
+    color: rgba(3, 3, 3, 0.6);
+  }
+  
+  .search-input:focus {
+    background: rgba(250, 196, 20, 0.2);
+    border-color: black;
+    color: #fff;
+  }
+  
+  .search-btn {
+    background: #ffc107;
+    border: 1px solid black;
+    color: black;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .search-btn:hover {
+    background:black;
+    color: #fff;
+  }
+  </style>
 {% endblock %}
 
 <nav class="navbar navbar-expand-lg">
-    
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-            <img src="{% static 'images/Logo.png' %}" alt="Logo" class="logo">
-        </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-
-
-            
-            <form method="GET" action="{% url 'busqueda_usuarios' %}" class="mb-4">
-                <div class="input-group">
-                    <input type="text" name="textoBusqueda" class="form-control" placeholder="Buscar usuarios..." required>
-                    <button type="submit" class="btn btn-primary">Buscar</button>
-                </div>
-            </form>
-     
-
-            <ul class="navbar-nav ms-auto align-items-center">
-
-
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'usuarios_busqueda_avanzada' %}">
-                        <i class="fa-brands fa-searchengin nav-icon"></i>
-                        <span class="nav-tooltip">Buscar usuarios</span>
-                    </a>
-                </li>
-
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lista_usuarios_completa' %}">
-                            <i class="fa-brands fa-searchengin nav-icon"></i>
-                            <span class="nav-tooltip">Buscar usuarios</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lista_canciones'%}">
-                            <i class="fas fa-meteor"></i>
-                            <span class="nav-tooltip">Ver canciones</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lista_albumes_usuario' 'DavidBowie' %}">
-                            <i class="fa-solid fa-shuttle-space nav-icon"></i>
-                            <span class="nav-tooltip">Ver álbumes David Bowie</span>
-                        </a>
-                    </li>
-
-                
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'lista_playlists' %}">
-                            <i class="fa-solid fa-newspaper nav-icon"></i>
-                            <span class="nav-tooltip">Ver playlists</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'canciones_por_genero_api' %}">
-                            <i class="fa-solid fa-satellite-dish nav-icon"></i>
-                            <span class="nav-tooltip">Ver géneros</span>
-                        </a>
-                    </li>
-            </ul>
+  <div class="container-fluid">
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'images/Logo.png' %}" alt="Logo" class="logo">
+      </a>
+      
+      <form method="GET" action="{% url 'busqueda_usuarios' %}" class="search-form">
+        <div class="input-group">
+          <input type="text" name="textoBusqueda" class="form-control search-input" placeholder="Buscar usuarios..." required>
+          <button type="submit" class="btn search-btn">
+            <i class="fas fa-search"></i>
+          </button>
         </div>
+      </form>
+
+      <button class="navbar-toggler ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
     </div>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'usuarios_busqueda_avanzada' %}">
+            <i class="fa-brands fa-searchengin nav-icon"></i>
+            <span class="nav-tooltip">Buscar usuarios</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'albumes_busqueda_avanzada' %}">
+            <i class="fa-solid fa-shuttle-space nav-icon"></i>
+            <span class="nav-tooltip">Buscar Álbumes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'canciones_busqueda_avanzada'%}">
+            <i class="fas fa-meteor"></i>
+            <span class="nav-tooltip">Buscar canciones</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'playlists_busqueda_avanzada' %}">
+            <i class="fa-solid fa-newspaper nav-icon"></i>
+            <span class="nav-tooltip">Buscar playlists</span>
+          </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Mostrar listas
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'lista_usuarios_completa' %}">Ver usuarios</a></li>
+            <li><a class="dropdown-item" href="{% url 'canciones_por_genero_api' %}">Ver álbumes</a></li>
+            <li><a class="dropdown-item" href="{% url 'lista_canciones'%}">Ver canciones</a></li>
+            <li><a class="dropdown-item" href="{% url 'lista_playlists' %}">Ver playlists</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>

@@ -218,9 +218,9 @@
                 </div>
                 {% endif %}
 
-                {% if usuarios %}
+                {% if usuarios_mostrar %}
                 <div class="user-grid">
-                    {% for usuario in usuarios %}
+                    {% for usuario in usuarios_mostrar %}
                     <div class="user-card">
                         <div class="user-header">
                             <div class="d-flex position-relative">
@@ -301,7 +301,7 @@
                 </div>
                 {% else %}
                 <div class="alert alert-info">
-                    <p class="mb-0">No hay usuarios para mostrar.</p>
+                    <p class="mb-0 text-dark">No hay usuarios para mostrar.</p>
                 </div>
                 {% endif %}
             </div>

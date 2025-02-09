@@ -5,49 +5,6 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/fondo_estrella.css' %}">
 <style>
-
-
-    .form-container {
-        background: rgba(33, 37, 41, 0.6);
-        border: 1px solid rgba(0, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        border-radius: 15px;
-        padding: 2rem;
-    }
-
-    .site-title{
-        color: rgb(0, 255, 255);
-    }
-
-    .form-control {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(0, 255, 255, 0.2);
-        color: #fff;
-    }
-
-    .form-control:focus {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: #0ff;
-        color: #fff;
-        box-shadow: 0 0 0 0.25rem rgba(0, 255, 255, 0.25);
-    }
-
-    .form-label {
-        color: #0ff;
-    }
-
-    .btn-primary {
-        background: rgba(0, 255, 255, 0.1);
-        border: 1px solid rgba(0, 255, 255, 0.2);
-        color: #0ff;
-    }
-
-    .btn-primary:hover {
-        background: rgba(0, 255, 255, 0.2);
-        border-color: #0ff;
-        color: #fff;
-    }
-
     .form-container {
         background: rgba(33, 37, 41, 0.6);
         border: 1px solid rgba(0, 255, 255, 0.2);
@@ -78,8 +35,30 @@
         transition: opacity 0.3s ease;
     }
 
+    .site-title{
+        color: rgb(0, 255, 255);
+    }
+
+
     .form-container:hover::before {
         opacity: 0.3;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: #0ff;
+        color: #fff;
+        box-shadow: 0 0 0 0.25rem rgba(0, 255, 255, 0.25);
+    }
+    
+    .form-label, .form-text, .invalid-feedback {
+        color: #0ff;
     }
 
     .btn-primary {
@@ -99,7 +78,7 @@
 
     .btn-primary::before {
         content: '';
-        position: absolute; 
+        position: absolute;
         top: 50%;
         left: 50%;
         width: 200%;
@@ -113,11 +92,9 @@
         transform: translate(-50%, -50%) scale(1);
     }
 
-
-    .input{
-        color: white;
+    .form-select option{
+        color: black;
     }
-</style>
 </style>
 {% endblock %}
 
@@ -127,29 +104,29 @@
     <div class="container py-5">
         <div class="screen-container">
             <div class="p-4">
-                <div class="text-center mb-4">
-                    <h1 class="site-title">Búsqueda Avanzada de Usuarios</h1>
+                <div class="text-center mb-5">
+                    <h1 class="site-title">Búsqueda Avanzada de Playlists</h1>
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
                         <div class="cyber-card form-container">
                             <div class="card-body p-4">
-                                <form action="{% url 'usuarios_busqueda_avanzada' %}" method="GET">
+                                <form action="{% url 'playlists_busqueda_avanzada' %}" method="GET">
                                     {% csrf_token %}
                                     <div class="mb-4">
-                                        {% bootstrap_field formulario.nombre_usuario show_label=True %}
+                                        {% bootstrap_field formulario.nombre show_label=True %}
                                     </div>
                                     <div class="mb-4">
-                                        {% bootstrap_field formulario.ciudad show_label=True %}
+                                        {% bootstrap_field formulario.usuario show_label=True %}
                                     </div>
                                     <div class="mb-4">
-                                        {% bootstrap_field formulario.edad_min show_label=True %}
+                                        {% bootstrap_field formulario.fecha_desde show_label=True %}
                                     </div>
                                     <div class="mb-4">
-                                        {% bootstrap_field formulario.edad_max show_label=True %}
+                                        {% bootstrap_field formulario.fecha_hasta show_label=True %}
                                     </div>
                                     <div class="mb-4">
-                                        {% bootstrap_field formulario.bio_contains show_label=True %}
+                                        {% bootstrap_field formulario.publica show_label=True %}
                                     </div>
                                     <div class="text-center">
                                         {% bootstrap_button "Buscar" button_type="submit" button_class="btn btn-primary" %}

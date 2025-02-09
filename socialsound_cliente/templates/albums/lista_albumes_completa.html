@@ -1,0 +1,305 @@
+{% extends 'principal.html' %}
+{% load static %}
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'css/fondo_estrella.css' %}">
+<link rel="stylesheet" href="{% static 'css/reproductor.css' %}">
+<style>
+   
+    @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(100%); }
+    }
+
+    .screen-container {
+        position: relative;
+        width: 100%;
+        border-radius: 15px;
+        padding: 3px;
+        background: linear-gradient(45deg, rgba(0,0,0,0.5), rgba(255,255,255,0.1));
+    }
+
+    .screen-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 15px;
+        padding: 2px;
+        background: linear-gradient(45deg, #0ff, #f0f, #ff0);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .library-window {
+        background: rgba(10, 10, 10, 0.2);
+        border-radius: 15px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        overflow: hidden;
+        position: relative;
+        padding: 2rem;
+    }
+
+    .library-window::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.1) 0px,
+            rgba(0, 0, 0, 0.1) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .scanline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 10px;
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            rgba(255, 255, 255, 0.7),
+            transparent
+        );
+        animation: scanline 8s linear infinite;
+        pointer-events: none;
+        opacity: 0.3;
+    }
+
+    .song-card {
+        background: rgba(33, 37, 41, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .bg-primary-gradient {
+        background: linear-gradient(45deg, rgba(13, 110, 253, 0.3), rgba(0, 255, 255, 0.1));
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .song-details {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 1.5rem;
+    }
+
+    .cyber-image {
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.1);
+    }
+
+    .no-cover {
+        background: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,255,255,0.1));
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .genre-badge {
+        background: rgba(13, 110, 253, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        padding: 0.5em 1em;
+    }
+
+    .lyrics-box {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .details-box {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 1rem;
+    }
+</style>
+{% endblock %}
+
+
+{% block extra_script %}
+<script src="{% static 'js/reproductor.js' %}"></script>
+{% endblock %}
+
+{% block contenido %}
+<div class="container-star">
+    <div class="stars"></div>
+    <div class="container py-5">
+        <div class="screen-container">
+            <div class="library-window">
+                <div class="scanline"></div>
+        
+                {% if albumes_mostrar %}
+                    {% for album in albumes_mostrar %}
+                        <div class="song-card mb-5">
+                            <!-- Cabecera del Álbum -->
+                            <div class="card-header bg-primary-gradient d-flex justify-content-between align-items-center p-4">
+                                <h2 class="text-info mb-0 fw-bold">{{ album.titulo }}</h2>
+                            </div>
+                            
+                            <div class="card-body">
+                                <!-- Información Principal del Álbum -->
+                                <div class="row g-4 mb-4">
+                                    <div class="col-md-4">
+                                        {% if album.portada %}
+                                            <img src="{{ album.portada_url }}" alt="Portada del álbum" class="img-fluid rounded-3 cyber-image">
+                                        {% else %}
+                                            <div class="no-cover rounded-3">
+                                                <i class="fas fa-compact-disc fa-4x"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="song-details h-100">
+                                            <h3 class="text-info mb-3">Información del Álbum</h3>
+                                            <p class="text-white-50"><i class="fas fa-user me-2"></i>{{ album.artista }}</p>
+                                            <p class="text-white-50"><i class="fas fa-calendar me-2"></i>{{ album.fecha_subida }}</p>
+                                            <p class="text-white-50"><i class="fas fa-info-circle me-2"></i>{{ album.descripcion }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Detalles del Álbum -->
+                                {% if album.detalle_album %}
+                                    <div class="song-details mb-4">
+                                        <h3 class="text-info mb-3">Detalles del Álbum</h3>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <p class="text-white-50"><i class="fas fa-user-tie me-2"></i>Productor: {{ album.detalle_album.productor }}</p>
+                                                <p class="text-white-50"><i class="fas fa-microphone-alt me-2"></i>Estudio: {{ album.detalle_album.estudio_grabacion }}</p>
+                                                <p class="text-white-50"><i class="fas fa-music me-2"></i>Pistas: {{ album.detalle_album.numero_pistas }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="text-white-50"><i class="fas fa-record-vinyl me-2"></i>Sello: {{ album.detalle_album.sello_discografico }}</p>
+                                                <p class="text-white-50"><i class="fas fa-comments me-2"></i>Comentarios: {{ album.detalle_album.numero_comentarios }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                                <!-- Lista de Canciones -->
+                                {% if album.canciones %}
+                                    <h3 class="text-info mb-4">Canciones del Álbum</h3>
+                                    {% for cancion in album.canciones %}
+                                        <div class="song-details mb-4">
+                                            <div class="d-flex align-items-center mb-3">
+                                                {% if cancion.portada %}
+                                                    <img src="{{ cancion.portada_url }}" alt="Portada de la canción" class="me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="no-cover me-3 rounded" style="width: 60px; height: 60px;">
+                                                        <i class="fas fa-music"></i>
+                                                    </div>
+                                                {% endif %}
+                                                <div>
+                                                    <h4 class="text-info mb-1">{{ cancion.titulo }}</h4>
+                                                    <p class="text-white-50 mb-0">{{ cancion.artista }}</p>
+                                                </div>
+                                                <span class="ms-auto badge genre-badge">{{ cancion.etiqueta }}</span>
+                                            </div>
+
+                                            <div class="row g-4">
+                                                <div class="col-md-12">
+                                                    {% if cancion.archivo_audio_url %}
+                                                    <div class="cyber-audio-player">
+                                                        <audio id="audio-{{ cancion.id }}" src="{{ cancion.archivo_audio_url }}" preload="metadata"></audio>
+                                                        
+                                                        <div class="cyber-player-container">
+                                                            <!-- Botón Play/Pause -->
+                                                            <button class="cyber-play-btn" onclick="togglePlay(this)" data-audio-id="{{ cancion.id }}">
+                                                                <i class="fas fa-play"></i>
+                                                            </button>
+                                                            
+                                                            <!-- Tiempo actual y duración -->
+                                                            <div class="cyber-time-display">
+                                                                <span class="cyber-current-time">0:00</span>
+                                                                <span class="cyber-duration">0:00</span>
+                                                            </div>
+                                                            
+                                                            <!-- Barra de progreso -->
+                                                            <div class="cyber-progress-container">
+                                                                <div class="cyber-progress-bar">
+                                                                    <div class="cyber-progress"></div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!-- Control de volumen -->
+                                                            <div class="cyber-volume-container">
+                                                                <i class="fas fa-volume-up cyber-volume-icon"></i>
+                                                                <div class="cyber-volume-slider">
+                                                                    <div class="cyber-volume-progress"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+
+                                                {% if cancion.detalles %}
+                                                    <div class="col-md-6">
+                                                        <div class="details-box">
+                                                            <h5 class="text-info mb-3">Detalles de la Canción</h5>
+                                                            {% if cancion.detalles.letra %}
+                                                                <div class="lyrics-box mb-3">
+                                                                    <p class="text-white-50 mb-2"><strong>Letra:</strong></p>
+                                                                    <pre class="text-white-50">{{ cancion.detalles.letra }}</pre>
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if cancion.detalles.creditos %}
+                                                                <p class="text-white-50"><strong>Créditos:</strong> {{ cancion.detalles.creditos }}</p>
+                                                            {% endif %}
+                                                            <p class="text-white-50"><strong>Duración:</strong> {{ cancion.detalles.duracion_formateada }}</p>
+                                                            <p class="text-white-50"><strong>Idioma:</strong> {{ cancion.detalles.idioma }}</p>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="alert alert-info bg-dark text-info">
+                                        Este álbum no tiene canciones
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-warning bg-dark text-warning">
+                        No hay álbumes disponibles
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
