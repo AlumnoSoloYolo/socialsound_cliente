@@ -35,9 +35,7 @@ def lista_playlists_api(request):
             cancion['portada_url'] = f"{settings.API_MEDIA_URL}{cancion['cancion']['portada']}"
             cancion['archivo_audio_url'] = f"{settings.API_MEDIA_URL}{cancion['cancion']['archivo_audio']}"
     
-            print(f'{cancion['cancion']['archivo_audio']}')
-            print(f'{cancion['portada_url']}')
-
+    
     
    
     return render(request, 'playlists/lista_playlist_completa.html', {'playlists_mostrar': playlists})
