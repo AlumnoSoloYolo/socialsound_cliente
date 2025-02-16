@@ -4,6 +4,9 @@ from django.conf import settings
 from .forms import *
 from requests.exceptions import HTTPError
 import xml.etree.ElementTree as ET
+import base64
+import datetime
+import json
 
 
 def formato_respuesta(response):
@@ -256,8 +259,6 @@ def album_busqueda_avanzada_api(request):
 
                 return render(request, "albums/lista_albumes_completa.html", {"albumes_mostrar": albumes})
 
-
-                return render(request, "albums/lista_albumes_completa.html", {"albumes_mostrar": albumes})
             
             response.raise_for_status()
             
@@ -364,6 +365,67 @@ def playlist_busqueda_avanzada_api(request):
     formulario = BusquedaAvanzadaPlaylistForm(None)
     return render(request, 'playlists/busqueda_avanzada_playlists.html', {"formulario": formulario})
 
+
+def crear_cabecera_contentType():
+    return {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}', "Content-Type": "application/json"  }
+
+def usuario_crear(request):
+    if (request.method == "POST"):
+        try:
+            formulario = UsuarioForm(request.POST, request.FILES)
+            if not formulario.is_valid():
+                return render(request, 'usuarios/crear-usuario.html', {"formulario": formulario})
+                
+            headers = crear_cabecera_contentType()
+            datos = formulario.cleaned_data.copy()
+            
+            if 'foto_perfil' in request.FILES:
+                    foto = request.FILES['foto_perfil']
+                    # Leemos todo el contenido del archivo
+                    with foto.open('rb') as f:
+                        foto_contenido = f.read()
+                        
+                    # Imprimimos el tamaño para debug
+                    print(f"Tamaño de la foto: {len(foto_contenido)} bytes")
+                    
+                    # Codificamos a base64 incluyendo el tipo MIME
+                    encoded = base64.b64encode(foto_contenido).decode('utf-8')
+                    datos['foto_perfil'] = f"data:{foto.content_type};base64,{encoded}"
+                    
+                    # Imprimimos el tamaño del base64 para debug
+                    print(f"Tamaño del base64: {len(encoded)} caracteres")
+            else:
+                    datos['foto_perfil'] = ''
+
+            print("Datos que se envían al backend:", datos)
+            
+            response = requests.post(
+                'http://127.0.0.1:8000/api/v1/usuarios/crear',
+                headers=headers,
+                data=json.dumps(datos)
+            )
+            if(response.status_code == requests.codes.ok):
+                return redirect("lista_usuarios_completa")
+            else:
+                print("Respuesta del backend:", response.text)
+                response.raise_for_status()
+        except HTTPError as http_err:
+            print(f'Hubo un error en la petición: {http_err}')
+            if(response.status_code == 400):
+                errores = response.json()
+                for error in errores:
+                    formulario.add_error(error, errores[error])
+                return render(request, 
+                            'usuarios/crear-usuarios.html',
+                            {"formulario": formulario})
+            else:
+                return mi_error_500(request)
+        except Exception as err:
+            print(f'Ocurrió un error: {err}')
+            return mi_error_500(request)
+    else:
+        formulario = UsuarioForm(None)
+    return render(request, 'usuarios/crear-usuarios.html', {"formulario": formulario})
 
 
 

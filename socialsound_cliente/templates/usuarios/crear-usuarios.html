@@ -1,0 +1,58 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<form action="{% url 'usuario_crear' %}" method="post" enctype="multipart/form-data"> 
+    {% load django_bootstrap5 %}
+    {% csrf_token %} 
+    
+    <div class="mb-4">
+        {% bootstrap_field formulario.nombre_usuario show_label=True %}
+        {% if formulario.nombre_usuario.errors %}
+        <div class="alert alert-danger">
+            {% for error in formulario.nombre_usuario.errors %}
+                {{ error }}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.email show_label=True %}
+        {% if formulario.email.errors %}
+        <div class="alert alert-danger">
+            {% for error in formulario.email.errors %}
+                {{ error }}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.password show_label=True %}
+        {% if formulario.password.errors %}
+        <div class="alert alert-danger">
+            {% for error in formulario.password.errors %}
+                {{ error }}<br>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.bio show_label=True %}
+    </div>
+
+    <div class="mb-4">
+        {% bootstrap_field formulario.foto_perfil show_label=True %}
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+            {{ error }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% bootstrap_button "Enviar" button_type="submit" button_class="btn-primary" %}
+</form>
+{% endblock %}

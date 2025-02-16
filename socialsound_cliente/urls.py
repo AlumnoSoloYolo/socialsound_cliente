@@ -15,5 +15,6 @@ urlpatterns = [
      path('albumes/busqueda_avanzada/', album_busqueda_avanzada_api, name='albumes_busqueda_avanzada'),
      path('canciones/busqueda_avanzada/', cancion_busqueda_avanzada_api, name='canciones_busqueda_avanzada'),
      path('playlists/busqueda_avanzada/', playlist_busqueda_avanzada_api, name='playlists_busqueda_avanzada'),
+     path('usuario/crear/', usuario_crear, name='usuario_crear'),
 
 ]
