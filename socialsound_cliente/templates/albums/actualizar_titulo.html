@@ -1,0 +1,24 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Actualizar Título del Álbum</h2>
+    
+    <form action="{% url 'album_editar_titulo' id=id %}" method="post">
+        {% load django_bootstrap5 %}
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            {% bootstrap_field formulario.titulo show_label=True %}
+            {% if formulario.titulo.errors %}
+            <div class="alert alert-danger">
+                {% for error in formulario.titulo.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% bootstrap_button "Actualizar Título" button_type="submit" button_class="btn-primary" %}
+    </form>
+</div>
+{% endblock %}

@@ -277,6 +277,271 @@ class UsuarioForm(forms.Form):
             raise forms.ValidationError("El email debe tener al menos 4 caracteres antes del @")
         return email
     
+
+class UsuarioUpdateForm(forms.Form):
+    nombre_usuario = forms.CharField(
+        label="Nombre de Usuario",
+        required=True, 
+        max_length=100,
+        help_text="100 caracteres como máximo"
+    )
+    
+    email = forms.EmailField(
+        label="Email",
+        required=True, 
+        help_text="Introduce un email válido"
+    )
+    
+    password = forms.CharField(
+        label="Contraseña (opcional)",
+        required=False, 
+        widget=forms.PasswordInput(),
+        help_text="Rellenar solo si desea cambiar la contraseña"
+    )
+    
+    bio = forms.CharField(
+        label="Biografía",
+        required=False,
+        widget=forms.Textarea()
+    )
+    
+    foto_perfil = forms.FileField(
+        label="Foto de Perfil",
+        required=False
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        if password:
+            if len(password) < 8:
+                self.add_error('password', "La contraseña debe tener al menos 8 caracteres")
+            if not re.search("[a-z]", password):
+                self.add_error('password', "La contraseña debe incluir al menos una minúscula")
+            if not re.search("[A-Z]", password):
+                self.add_error('password', "La contraseña debe incluir al menos una mayúscula")
+            if not re.search("[0-9]", password):
+                self.add_error('password', "La contraseña debe incluir al menos un número")
+            if not re.search("[!@#$%^&*(),.?\":{}|<>]", password):
+                self.add_error('password', "La contraseña debe incluir al menos un carácter especial")
+        return cleaned_data
+    
+
+class UsuarioActualizarNombreForm(forms.Form):
+    nombre_usuario = forms.CharField(
+        label="Nombre de Usuario",
+        required=True, 
+        max_length=100,
+        help_text="100 caracteres como máximo"
+    )
+
+
+from .helpers import helper
+
+
+class AlbumForm(forms.Form):
+    titulo = forms.CharField(max_length=200, required=True)
+    artista = forms.CharField(max_length=200, required=True)
+    portada = forms.ImageField(required=False)
+    descripcion = forms.CharField(widget=forms.Textarea, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(AlbumForm, self).__init__(*args, **kwargs)
+        usuarios_disponibles = helper.obtener_usuarios_select()
+        self.fields['usuario'] = forms.ChoiceField(
+            choices=usuarios_disponibles,
+            widget=forms.Select,
+            required=True,
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        titulo = cleaned_data.get('titulo')
+        artista = cleaned_data.get('artista')
+        descripcion = cleaned_data.get('descripcion')
+        usuario = cleaned_data.get('usuario')
+
+        if titulo:
+            if len(titulo) < 3:
+                self.add_error('titulo', 'El título debe tener al menos 3 caracteres')
+            if len(titulo) > 200:
+                self.add_error('titulo', 'El título no puede exceder los 200 caracteres')
+
+        if artista:
+            if len(artista) < 2:
+                self.add_error('artista', 'El nombre del artista debe tener al menos 2 caracteres')
+            if len(artista) > 200:
+                self.add_error('artista', 'El nombre del artista no puede exceder los 200 caracteres')
+
+        if descripcion and len(descripcion) > 1000:
+            self.add_error('descripcion', 'La descripción no puede exceder los 1000 caracteres')
+
+        if not usuario:
+            self.add_error('usuario', 'Debe seleccionar un usuario')
+
+        return cleaned_data
+    
+
+class AlbumUpdateForm(forms.Form):
+    titulo = forms.CharField(max_length=200, required=True)
+    artista = forms.CharField(max_length=200, required=True)
+    portada = forms.ImageField(required=False)
+    descripcion = forms.CharField(widget=forms.Textarea, required=False)
+
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        titulo = cleaned_data.get('titulo')
+        artista = cleaned_data.get('artista')
+
+        if titulo and len(titulo) < 3:
+            self.add_error('titulo', 'El título debe tener al menos 3 caracteres')
+            
+        if artista and len(artista) < 2:
+            self.add_error('artista', 'El artista debe tener al menos 2 caracteres')
+
+        return cleaned_data
+    
+
+class AlbumActualizarTituloForm(forms.Form):
+    titulo = forms.CharField(
+        label="Título",
+        max_length=200,
+        required=True,
+        help_text="Nuevo título del álbum"
+    )
+
+
+class PlaylistForm(forms.Form):
+    nombre = forms.CharField(
+        label="Nombre",
+        max_length=100,
+        required=True,
+        help_text="Nombre de la playlist"
+    )
+    descripcion = forms.CharField(
+        label="Descripción",
+        widget=forms.Textarea,
+        required=True,
+        help_text="Descripción de la playlist"
+    )
+    publica = forms.BooleanField(
+        label="Pública",
+        required=False,
+        initial=True
+    )
+    
+    def __init__(self, *args, **kwargs):
+        super(PlaylistForm, self).__init__(*args, **kwargs)
+        
+        usuarios_disponibles = helper.obtener_usuarios_select()
+        self.fields['usuario'] = forms.ChoiceField(
+            choices=usuarios_disponibles,
+            widget=forms.Select,
+            required=True,
+            label="Usuario"
+        )
+        
+        canciones_disponibles = helper.obtener_canciones_select()
+        self.fields['canciones'] = forms.MultipleChoiceField(
+            choices=canciones_disponibles,
+            widget=forms.SelectMultiple,
+            required=True,
+            label="Canciones",
+            help_text="Mantén pulsada la tecla control para seleccionar varias canciones"
+        )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        nombre = cleaned_data.get('nombre')
+        descripcion = cleaned_data.get('descripcion')
+        canciones = cleaned_data.get('canciones')
+
+        if nombre and len(nombre) < 3:
+            self.add_error('nombre', 'El nombre debe tener al menos 3 caracteres')
+
+        if descripcion and len(descripcion) < 10:
+            self.add_error('descripcion', 'La descripción debe tener al menos 10 caracteres')
+
+        if canciones and len(canciones) < 1:
+            self.add_error('canciones', 'Debe seleccionar al menos una canción')
+
+        return cleaned_data
+    
+
+class PlaylistUpdateForm(forms.Form):
+    nombre = forms.CharField(
+        label="Nombre",
+        max_length=100,
+        required=True
+    )
+    descripcion = forms.CharField(
+        label="Descripción",
+        widget=forms.Textarea,
+        required=True
+    )
+    publica = forms.BooleanField(
+        label="Pública",
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(PlaylistUpdateForm, self).__init__(*args, **kwargs)
+
+        # Obtener canciones disponibles
+        canciones_disponibles = helper.obtener_canciones_select()
+        self.fields['canciones'] = forms.MultipleChoiceField(
+            choices=canciones_disponibles,
+            widget=forms.SelectMultiple,
+            required=True,
+            label="Canciones"
+        )
+
+
+
+
+
+
+
+
+
+
+
+class DetalleAlbumForm(forms.Form):
+    productor = forms.CharField(max_length=200)
+    estudio_grabacion = forms.CharField(max_length=200, required=False)
+    numero_pistas = forms.IntegerField()
+    sello_discografico = forms.CharField(max_length=100, required=False)
+    
+    def __init__(self, *args, **kwargs):
+        super(DetalleAlbumForm, self).__init__(*args, **kwargs)
+        
+        albumes_disponibles = helper.obtener_albumes_select()
+        self.fields["album"] = forms.ChoiceField(
+            choices=albumes_disponibles,
+            widget=forms.Select,
+            required=True,
+        )
+
+
+class DetalleAlbumUpdateForm(forms.Form):
+    productor = forms.CharField(max_length=200)
+    estudio_grabacion = forms.CharField(max_length=200, required=False)
+    numero_pistas = forms.IntegerField()
+    sello_discografico = forms.CharField(max_length=100, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(DetalleAlbumUpdateForm, self).__init__(*args, **kwargs)
+        
+        albumes_disponibles = helper.obtener_albumes_select()  # Recupera las opciones de álbumes
+
+        # Si 'album' está en 'initial', entonces se pasa el valor inicial para el campo de 'album'
+        self.fields["album"] = forms.ChoiceField(
+            choices=albumes_disponibles,
+            widget=forms.Select,
+            required=True,
+        )
+
    
 
 

@@ -1,0 +1,14 @@
+{% extends "principal.html" %}
+{% block contenido %}
+{% load django_bootstrap5 %}
+<div class="container mt-4">
+    <h2>Editar Nombre de Usuario</h2>
+    <form action="{% url 'usuario_editar_nombre' usuario.id %}" method="post">
+        {% csrf_token %}
+        <div class="mb-4">
+            {% bootstrap_field formulario.nombre_usuario show_label=True %}
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+    </form>
+</div>
+{% endblock %}

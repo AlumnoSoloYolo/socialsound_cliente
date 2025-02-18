@@ -1,0 +1,33 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Crear Playlist</h2>
+    
+    <form action="{% url 'playlist_crear' %}" method="post">
+        {% load django_bootstrap5 %}
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            {% bootstrap_field formulario.nombre show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.descripcion show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.usuario show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.canciones show_label=True %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.publica show_label=True %}
+        </div>
+
+        {% bootstrap_button "Crear" button_type="submit" button_class="btn-primary" %}
+    </form>
+</div>
+{% endblock %}

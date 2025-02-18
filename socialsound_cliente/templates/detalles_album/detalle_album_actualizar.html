@@ -1,0 +1,30 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Actualizar Detalle de Álbum</h2>
+    <form action="{% url 'detalle_album_editar' id=id %}" method="post">
+        {% load django_bootstrap5 %}
+        {% csrf_token %}
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.productor show_label=True %}
+        </div>
+        <div class="mb-4">
+            {% bootstrap_field formulario.estudio_grabacion show_label=True %}
+        </div>
+        <div class="mb-4">
+            {% bootstrap_field formulario.numero_pistas show_label=True %}
+        </div>
+        <div class="mb-4">
+            {% bootstrap_field formulario.sello_discografico show_label=True %}
+        </div>
+         <div class="mb-4">
+            {% bootstrap_field formulario.album show_label=True %}
+        </div> 
+
+
+
+        {% bootstrap_button "Actualizar" button_type="submit" button_class="btn-primary" %}
+    </form>
+</div>
+{% endblock %}

@@ -296,6 +296,8 @@
                             <p><strong>Fecha de Nacimiento:</strong> {{ usuario.fecha_nac }}</p>
                             <p><strong>Biografía:</strong> {{ usuario.bio|default:"Sin biografía" }}</p>
                         </div>
+
+                        <a href="{% url 'usuario_eliminar' usuario.id %}" class="btn btn-danger btn-sm">Eliminar</a>
                     </div>
                     {% endfor %}
                 </div>

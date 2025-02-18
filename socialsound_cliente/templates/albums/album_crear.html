@@ -1,0 +1,11 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Crear Album</h2>
+    <form action="{% url 'album_crear' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ formulario.as_p }}
+        <button type="submit" class="btn btn-primary">Crear</button>
+    </form>
+</div>
+{% endblock %}
