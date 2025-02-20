@@ -1,0 +1,32 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Editar Canciones de Playlist: {{ playlist.nombre }}</h2>
+    
+    {% if formulario.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in formulario.non_field_errors %}
+            {{ error }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <form action="{% url 'cancion_playlist_editar' id=id %}" method="post">
+        {% load django_bootstrap5 %}
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            {% bootstrap_field formulario.canciones show_label=True %}
+            {% if formulario.canciones.errors %}
+            <div class="alert alert-danger">
+                {% for error in formulario.canciones.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% bootstrap_button "Guardar Cambios" button_type="submit" button_class="btn-primary" %}
+    </form>
+</div>
+{% endblock %}

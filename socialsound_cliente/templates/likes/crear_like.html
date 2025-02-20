@@ -1,0 +1,17 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Eliminar Like</h2>
+    
+    <div class="alert alert-warning">
+        ¿Estás seguro de que quieres eliminar el like de {{ like.usuario.nombre_usuario }} 
+        en la canción "{{ like.cancion.titulo }}"?
+    </div>
+    
+    <form action="{% url 'like_eliminar' id=like.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'lista_canciones' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

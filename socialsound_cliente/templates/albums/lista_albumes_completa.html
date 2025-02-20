@@ -166,6 +166,12 @@
                             <div class="card-header bg-primary-gradient d-flex justify-content-between align-items-center p-4">
                                 <h2 class="text-info mb-0 fw-bold">{{ album.titulo }}</h2>
                             </div>
+
+                            <div class="d-flex justify-content-end mb-4">
+                                <a href="{% url 'album_editar' album.id %}" class="btn btn-primary me-2">Editar</a>
+                                <a href="{% url 'album_editar_titulo' album.id %}" class="btn btn-secondary me-2">Editar 2</a>
+                                <a href="{% url 'album_eliminar' album.id %}" class="btn btn-danger">Eliminar</a>
+                            </div>
                             
                             <div class="card-body">
                                 <!-- Información Principal del Álbum -->

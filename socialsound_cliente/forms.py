@@ -497,6 +497,66 @@ class PlaylistUpdateForm(forms.Form):
             label="Canciones"
         )
 
+class PlaylistActualizarCancionesForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(PlaylistActualizarCancionesForm, self).__init__(*args, **kwargs)
+        
+        canciones_disponibles = helper.obtener_canciones_select()
+        self.fields['canciones'] = forms.MultipleChoiceField(
+            choices=canciones_disponibles,
+            widget=forms.SelectMultiple,
+            required=True,
+            label="Canciones",
+            help_text="Mantén pulsada la tecla control para seleccionar varias canciones"
+        )
+
+    def clean_canciones(self):
+        canciones = self.cleaned_data.get('canciones')
+        if not canciones or len(canciones) < 1:
+            raise forms.ValidationError("Debe seleccionar al menos una canción")
+        return canciones
+
+
+class LikeForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(LikeForm, self).__init__(*args, **kwargs)
+        
+        usuarios_disponibles = helper.obtener_usuarios_select()
+        self.fields['usuario'] = forms.ChoiceField(
+            choices=usuarios_disponibles,
+            widget=forms.Select,
+            required=True,
+            label="Usuario"
+        )
+        
+        canciones_disponibles = helper.obtener_canciones_select()
+        self.fields['cancion'] = forms.ChoiceField(
+            choices=canciones_disponibles,
+            widget=forms.Select,
+            required=True,
+            label="Canción"
+        )
+
+
+class LikeDeleteForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(LikeDeleteForm, self).__init__(*args, **kwargs)
+        
+        usuarios_disponibles = helper.obtener_usuarios_select()
+        self.fields['usuario'] = forms.ChoiceField(
+            choices=usuarios_disponibles,
+            widget=forms.Select,
+            required=True,
+            label="Usuario"
+        )
+        
+        canciones_disponibles = helper.obtener_canciones_select()
+        self.fields['cancion'] = forms.ChoiceField(
+            choices=canciones_disponibles,
+            widget=forms.Select,
+            required=True,
+            label="Canción"
+        )
 
 
 
@@ -504,6 +564,42 @@ class PlaylistUpdateForm(forms.Form):
 
 
 
+
+
+
+
+
+
+class CancionPlaylistForm(forms.Form):
+    playlist = forms.ChoiceField(
+        label="Playlist",
+        required=True
+    )
+    
+    def __init__(self, *args, **kwargs):
+        super(CancionPlaylistForm, self).__init__(*args, **kwargs)
+        
+        playlists_disponibles = helper.obtener_playlists_select()
+        self.fields['playlist'] = forms.ChoiceField(
+            choices=playlists_disponibles,
+            widget=forms.Select,
+            required=True,
+            label="Playlist"
+        )
+        
+        canciones_disponibles = helper.obtener_canciones_select()
+        self.fields['canciones'] = forms.MultipleChoiceField(
+            choices=canciones_disponibles,
+            widget=forms.SelectMultiple,
+            required=True,
+            label="Canciones",
+            help_text="Selecciona las canciones para la playlist"
+        )
+
+        # Si hay una playlist seleccionada, marcamos sus canciones
+        if self.data.get('playlist'):
+            canciones_actuales = helper.obtener_canciones_playlist(self.data['playlist'])
+            self.initial['canciones'] = canciones_actuales
 
 
 

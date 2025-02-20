@@ -157,6 +157,46 @@
                 </div>
 
                 <div class="row g-4">
+
+                     <!-- Usuarios -->
+                     <div class="col-md-6 col-lg-4">
+                        <div class="cyber-card h-100 position-relative">
+                            <div class="card-body text-center p-4">
+                                <div class="card-icon">
+                                    <i class="fas fa-users fa-2x text-info"></i>
+                                </div>
+                                <h5 class="text-info mb-3">Usuarios</h5>
+                                <p class="text-white-50 mb-4">Al crear el usuario te redirigirá a la lista de usuarios, donde podrás editar, editar un cmapo y eliminar cada uno</p>
+                                <a href="{% url 'usuario_crear' %}" class="cyber-btn d-inline-block">
+                                    <i class="fas fa-chevron-right me-2"></i>Crear Usuario
+                                </a>
+
+                                <a href="{% url 'usuarios_busqueda_avanzada' %}" class="cyber-btn d-inline-block">
+                                    <i class="fas fa-chevron-right me-2"></i>Buscar usuarios
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Álbumes -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="cyber-card h-100 position-relative">
+                            <div class="card-body text-center p-4">
+                                <div class="card-icon">
+                                    <i class="fas fa-compact-disc fa-2x text-info"></i>
+                                </div>
+                                <h5 class="text-info mb-3">Álbumes</h5>
+                                <p class="text-white-50 mb-4">Al crear el álbum te redirigirá a la lista de álbumes, donde podrás editar, editar un campo y eliminar cada uno</p>
+                                <a href="{% url 'album_crear' %}" class="cyber-btn d-inline-block">
+                                    <i class="fas fa-chevron-right me-2"></i>Crear álbumes
+                                </a>
+                                <a href="{% url 'albumes_busqueda_avanzada' %}" class="cyber-btn d-inline-block">
+                                    <i class="fas fa-chevron-right me-2"></i> Buscar álbums
+                                </a>
+                              
+                            </div>
+                        </div>
+                    </div>
                     <!-- Playlists -->
                     <div class="col-md-6 col-lg-4">
                         <div class="cyber-card h-100 position-relative">
@@ -173,69 +213,6 @@
                         </div>
                     </div>
 
-                    <!-- Álbumes -->
-                    <div class="col-md-6 col-lg-4">
-                        <div class="cyber-card h-100 position-relative">
-                            <div class="card-body text-center p-4">
-                                <div class="card-icon">
-                                    <i class="fas fa-compact-disc fa-2x text-info"></i>
-                                </div>
-                                <h5 class="text-info mb-3">Buscador de Álbumes</h5>
-                                <p class="text-white-50 mb-4">Explora los álbumes de nuestros artistas. Ejemplo: DavidBowie</p>
-                                <a href="{% url 'albumes_busqueda_avanzada' %}" class="cyber-btn d-inline-block">
-                                    <i class="fas fa-chevron-right me-2"></i>Ver Álbumes
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Usuarios -->
-                    <div class="col-md-6 col-lg-4">
-                        <div class="cyber-card h-100 position-relative">
-                            <div class="card-body text-center p-4">
-                                <div class="card-icon">
-                                    <i class="fas fa-users fa-2x text-info"></i>
-                                </div>
-                                <h5 class="text-info mb-3">Crear usuario</h5>
-                                <p class="text-white-50 mb-4">Descubre nuestra comunidad y sus colecciones musicales.</p>
-                                <a href="{% url 'usuario_crear' %}" class="cyber-btn d-inline-block">
-                                    <i class="fas fa-chevron-right me-2"></i>Crear Usuario
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Canciones -->
-                    <div class="col-md-6 col-lg-4">
-                        <div class="cyber-card h-100 position-relative">
-                            <div class="card-body text-center p-4">
-                                <div class="card-icon">
-                                    <i class="fas fa-music fa-2x text-info"></i>
-                                </div>
-                                <h5 class="text-info mb-3">Buscador Canciones</h5>
-                                <p class="text-white-50 mb-4">Explora nuestra biblioteca completa de canciones.</p>
-                                <a href="{% url 'canciones_busqueda_avanzada' %}" class="cyber-btn d-inline-block">
-                                    <i class="fas fa-chevron-right me-2"></i>Ver Canciones
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Géneros -->
-                    <div class="col-md-6 col-lg-4">
-                        <div class="cyber-card h-100 position-relative">
-                            <div class="card-body text-center p-4">
-                                <div class="card-icon">
-                                    <i class="fas fa-guitar fa-2x text-info"></i>
-                                </div>
-                                <h5 class="text-info mb-3">Géneros Musicales</h5>
-                                <p class="text-white-50 mb-4">Explora la música organizada por géneros.</p>
-                                <a href="{% url 'canciones_por_genero_api' %}" class="cyber-btn d-inline-block">
-                                    <i class="fas fa-chevron-right me-2"></i>Explorar Géneros
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

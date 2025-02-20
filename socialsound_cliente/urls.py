@@ -24,16 +24,23 @@ urlpatterns = [
 
      path('albumes/crear/', album_crear, name='album_crear'),
      path('albumes/editar/<int:id>/', album_editar, name='album_editar'),
-     path('albumes/actualizar-titulo/<int:id>/', album_editar_titulo, name='album_editar_titulo'),
+     path('albumes/editar-titulo/<int:id>/', album_editar_titulo, name='album_editar_titulo'),
      path('albumes/eliminar/<int:id>/', album_eliminar, name='album_eliminar'),
 
      path('playlists/crear/', playlist_crear, name='playlist_crear'),
      path('playlists/<int:id>/editar/', playlist_editar, name='playlist_editar'),
+     path('playlists/<int:id>/editar/canciones/', playlist_editar_canciones, name='playlist_editar_canciones'),
+     path('playlists/eliminar/<int:id>/', playlist_eliminar, name='playlist_eliminar'),
+
+     path('likes/crear/', like_crear, name='like_crear'),
+     path('likes/eliminar/', like_eliminar, name='like_eliminar'),
 
 
 
 
 
+     path('cancion-playlist/crear/', cancion_playlist_crear, name='cancion_playlist_crear'),
+     path('cancion-playlist/<int:id>/editar/', cancion_playlist_editar, name='cancion_playlist_editar'),
      path('detalles-album/crear/', detalle_album_crear, name='detalle_album_crear'),
      path('detalles-album/editar/<int:id>/', detalle_album_editar, name='detalle_album_editar'),
 

@@ -1,0 +1,43 @@
+{% extends "principal.html" %}
+{% block contenido %}
+<div class="container mt-4">
+    <h2>Eliminar Like</h2>
+    
+    {% if formulario.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in formulario.non_field_errors %}
+            {{ error }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <form action="{% url 'like_eliminar' %}" method="post">
+        {% load django_bootstrap5 %}
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            {% bootstrap_field formulario.usuario show_label=True %}
+            {% if formulario.usuario.errors %}
+            <div class="alert alert-danger">
+                {% for error in formulario.usuario.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.cancion show_label=True %}
+            {% if formulario.cancion.errors %}
+            <div class="alert alert-danger">
+                {% for error in formulario.cancion.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% bootstrap_button "Eliminar Like" button_type="submit" button_class="btn-danger" %}
+    </form>
+</div>
+{% endblock %}

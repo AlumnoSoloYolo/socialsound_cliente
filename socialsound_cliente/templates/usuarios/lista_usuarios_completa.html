@@ -246,6 +246,7 @@
                             </div>
                         </div>
 
+
                         <div class="user-info">
                             <div class="g-3">
                                 <div class="row-md-12">
@@ -297,7 +298,11 @@
                             <p><strong>Biografía:</strong> {{ usuario.bio|default:"Sin biografía" }}</p>
                         </div>
 
-                        <a href="{% url 'usuario_eliminar' usuario.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                        <div class="user-actions">
+                            <a href="{% url 'usuario_editar' usuario.id %}" class="btn btn-primary btn-sm">Editar</a>
+                            <a href="{% url 'usuario_editar_nombre' usuario.id %}" class="btn btn-secondary btn-sm">Editar 2</a>
+                            <a href="{% url 'usuario_eliminar' usuario.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>

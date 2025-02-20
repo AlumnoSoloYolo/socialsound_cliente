@@ -84,5 +84,28 @@ class helper:
         headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'} 
         response = requests.get(f'{settings.API_URL}playlists/{id}', headers=headers)
         return response.json()
+
+    def obtener_playlists_select():
+        headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'}
+        response = requests.get(f'{settings.API_URL}playlists/', headers=headers)
+        playlists = response.json()
+        
+        lista_playlists = [("", "Seleccione una playlist")]
+        for playlist in playlists:
+            lista_playlists.append((playlist["id"], playlist["nombre"]))
+        return lista_playlists
+
+
+    def obtener_canciones_playlist(playlist_id):
+        headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'}
+        response = requests.get(f'{settings.API_URL}playlists/{playlist_id}/', headers=headers)
+        playlist = response.json()
+        return [cancion.get(id) for cancion in playlist.get('canciones', [])]
     
-         
+
+    # def obtener_like(id):
+    #     headers = {'Authorization': f'Bearer {settings.OAUTH_TOKENS[1]}'}
+    #     response = requests.get(f'{settings.API_URL}likes/{id}/', headers=headers)
+    #     return response.json()
+        
+  
