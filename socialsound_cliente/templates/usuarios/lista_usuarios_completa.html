@@ -299,9 +299,9 @@
                         </div>
 
                         <div class="user-actions">
-                            <a href="{% url 'usuario_editar' usuario.id %}" class="btn btn-primary btn-sm">Editar</a>
-                            <a href="{% url 'usuario_editar_nombre' usuario.id %}" class="btn btn-secondary btn-sm">Editar 2</a>
-                            <a href="{% url 'usuario_eliminar' usuario.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                            <a href="{% url 'usuario_editar' usuario.id %}" class="btn btn-primary btn-sm">PUT</a>
+                            <a href="{% url 'usuario_editar_nombre' usuario.id %}" class="btn btn-secondary btn-sm">PATH</a>
+                            <a href="{% url 'usuario_eliminar' usuario.id %}" class="btn btn-danger btn-sm">DELETE</a>
                         </div>
                     </div>
                     {% endfor %}

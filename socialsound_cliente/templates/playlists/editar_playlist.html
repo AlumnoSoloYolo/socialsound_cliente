@@ -24,6 +24,14 @@
             {% bootstrap_field formulario.publica show_label=True %}
         </div>
 
+        {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in form.non_field_errors %}
+            {{ error }}<br>
+        {% endfor %}
+    </div>
+    {% endif %}
+
         {% bootstrap_button "Actualizar" button_type="submit" button_class="btn-primary" %}
         <a href="{% url 'lista_playlists' %}" class="btn btn-secondary">Cancelar</a>
     </form>

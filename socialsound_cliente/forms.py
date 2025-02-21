@@ -285,46 +285,43 @@ class UsuarioUpdateForm(forms.Form):
         max_length=100,
         help_text="100 caracteres como máximo"
     )
-    
+
     email = forms.EmailField(
         label="Email",
         required=True, 
         help_text="Introduce un email válido"
     )
-    
-    password = forms.CharField(
-        label="Contraseña (opcional)",
-        required=False, 
-        widget=forms.PasswordInput(),
-        help_text="Rellenar solo si desea cambiar la contraseña"
-    )
-    
+
     bio = forms.CharField(
         label="Biografía",
         required=False,
         widget=forms.Textarea()
     )
-    
+
     foto_perfil = forms.FileField(
         label="Foto de Perfil",
         required=False
     )
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get('password')
-        if password:
-            if len(password) < 8:
-                self.add_error('password', "La contraseña debe tener al menos 8 caracteres")
-            if not re.search("[a-z]", password):
-                self.add_error('password', "La contraseña debe incluir al menos una minúscula")
-            if not re.search("[A-Z]", password):
-                self.add_error('password', "La contraseña debe incluir al menos una mayúscula")
-            if not re.search("[0-9]", password):
-                self.add_error('password', "La contraseña debe incluir al menos un número")
-            if not re.search("[!@#$%^&*(),.?\":{}|<>]", password):
-                self.add_error('password', "La contraseña debe incluir al menos un carácter especial")
-        return cleaned_data
+    def clean_nombre_usuario(self):
+        nombre = self.cleaned_data['nombre_usuario']
+        if len(nombre) < 4:
+            raise forms.ValidationError("El nombre debe tener al menos 4 caracteres")
+        if not nombre.isalnum():
+            raise forms.ValidationError("El nombre solo puede contener letras y números")
+        if any(char.isupper() for char in nombre):
+            raise forms.ValidationError("El nombre no puede contener mayúsculas")
+        return nombre
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            raise forms.ValidationError("Introduce un email válido")
+        if not any(x.isupper() for x in email.split('@')[0]):
+            raise forms.ValidationError("El email debe contener al menos una mayúscula antes del @")
+        if len(email.split('@')[0]) < 4:
+            raise forms.ValidationError("El email debe tener al menos 4 caracteres antes del @")
+        return email
     
 
 class UsuarioActualizarNombreForm(forms.Form):
@@ -488,7 +485,7 @@ class PlaylistUpdateForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(PlaylistUpdateForm, self).__init__(*args, **kwargs)
 
-        # Obtener canciones disponibles
+      
         canciones_disponibles = helper.obtener_canciones_select()
         self.fields['canciones'] = forms.MultipleChoiceField(
             choices=canciones_disponibles,

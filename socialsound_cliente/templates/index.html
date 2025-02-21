@@ -186,7 +186,7 @@
                                     <i class="fas fa-compact-disc fa-2x text-info"></i>
                                 </div>
                                 <h5 class="text-info mb-3">Álbumes</h5>
-                                <p class="text-white-50 mb-4">Al crear el álbum te redirigirá a la lista de álbumes, donde podrás editar, editar un campo y eliminar cada uno</p>
+                                <p class="text-white-50 mb-4">Al crear un álbum te redirigirá a la lista de álbumes, donde podrás editar, editar un campo y eliminar cada uno</p>
                                 <a href="{% url 'album_crear' %}" class="cyber-btn d-inline-block">
                                     <i class="fas fa-chevron-right me-2"></i>Crear álbumes
                                 </a>
@@ -204,10 +204,32 @@
                                 <div class="card-icon">
                                     <i class="fas fa-list fa-2x text-info"></i>
                                 </div>
-                                <h5 class="text-info mb-3">Buscador de Playlists</h5>
-                                <p class="text-white-50 mb-4">Explora todas las playlists compartidas por nuestros usuarios.</p>
+                                <h5 class="text-info mb-3">Playlists</h5>
+                                <p class="text-white-50 mb-4">Al crear una playlist te redirigirá a la lista de álbumes, donde podrás editar, editar un campo y eliminar cada uno</p>
+                                <a href="{% url 'playlist_crear' %}" class="cyber-btn d-inline-block">
+                                    <i class="fas fa-chevron-right me-2"></i>Crear Playlist
+                                </a>
                                 <a href="{% url 'playlists_busqueda_avanzada' %}" class="cyber-btn d-inline-block">
-                                    <i class="fas fa-chevron-right me-2"></i>Ver Playlists
+                                    <i class="fas fa-chevron-right me-2"></i>buscar Playlists
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                     <!-- Playlists -->
+                     <div class="col-md-6 col-lg-4">
+                        <div class="cyber-card h-100 position-relative">
+                            <div class="card-body text-center p-4">
+                                <div class="card-icon">
+                                   <i class="fa-solid fa-thumbs-up text-info"></i>
+                                </div>
+                                <h5 class="text-info mb-3">Likes</h5>
+                                <p class="text-white-50 mb-4">Al dar un like te redirigirá a la lista de álbumes, donde se podrá ver si se ha añadido o quitado el like</p>
+                                <a href="{% url 'like_crear' %}" class="cyber-btn d-inline-block">
+                                    <i class="fas fa-chevron-right me-2"></i>Dar like
+                                </a>
+                                <a href="{% url 'like_eliminar' %}" class="cyber-btn d-inline-block">
+                                    <i class="fas fa-chevron-right me-2"></i>Quitar like
                                 </a>
                             </div>
                         </div>

@@ -1,17 +1,43 @@
 {% extends "principal.html" %}
 {% block contenido %}
 <div class="container mt-4">
-    <h2>Eliminar Like</h2>
+    <h2>Crear Like</h2>
     
-    <div class="alert alert-warning">
-        ¿Estás seguro de que quieres eliminar el like de {{ like.usuario.nombre_usuario }} 
-        en la canción "{{ like.cancion.titulo }}"?
+    {% if formulario.non_field_errors %}
+    <div class="alert alert-danger">
+        {% for error in formulario.non_field_errors %}
+            {{ error }}<br>
+        {% endfor %}
     </div>
+    {% endif %}
     
-    <form action="{% url 'like_eliminar' id=like.id %}" method="post">
+    <form action="{% url 'like_crear' %}" method="post">
+        {% load django_bootstrap5 %}
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-        <a href="{% url 'lista_canciones' %}" class="btn btn-secondary">Cancelar</a>
+        
+        <div class="mb-4">
+            {% bootstrap_field formulario.usuario show_label=True %}
+            {% if formulario.usuario.errors %}
+            <div class="alert alert-danger">
+                {% for error in formulario.usuario.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-4">
+            {% bootstrap_field formulario.cancion show_label=True %}
+            {% if formulario.cancion.errors %}
+            <div class="alert alert-danger">
+                {% for error in formulario.cancion.errors %}
+                    {{ error }}<br>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% bootstrap_button "Crear Like" button_type="submit" button_class="btn-primary" %}
     </form>
 </div>
 {% endblock %}

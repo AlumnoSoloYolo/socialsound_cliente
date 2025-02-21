@@ -11,9 +11,13 @@
             {% bootstrap_field formulario.nombre_usuario show_label=True %}
             {% if formulario.nombre_usuario.errors %}
             <div class="alert alert-danger">
-                {% for error in formulario.nombre_usuario.errors %}
-                    {{ error }}<br>
-                {% endfor %}
+                {% if formulario.nombre_usuario.errors %}
+                <div class="invalid-feedback">
+                    {% for error in formulario.nombre_usuario.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
             </div>
             {% endif %}
         </div>
@@ -22,24 +26,17 @@
             {% bootstrap_field formulario.email show_label=True %}
             {% if formulario.email.errors %}
             <div class="alert alert-danger">
-                {% for error in formulario.email.errors %}
-                    {{ error }}<br>
-                {% endfor %}
+                {% if formulario.email.errors %}
+                <div class="invalid-feedback">
+                    {% for error in formulario.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
             </div>
             {% endif %}
         </div>
 
-    
-        <div class="mb-4">
-            {% bootstrap_field formulario.password show_label=True %}
-            {% if formulario.password.errors %}
-            <div class="alert alert-danger">
-                {% for error in formulario.password.errors %}
-                    {{ error }}<br>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
 
         <div class="mb-4">
             {% bootstrap_field formulario.bio show_label=True %}

@@ -116,30 +116,33 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
     {% block extra_script %}
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var alertModal = document.getElementById('alert-modal');
-        var closeModalBtn = document.getElementById('close-modal');
-
-        function hideModal() {
-            alertModal.style.display = 'none';
-        }
-
-        if (alertModal) {
-            var timeoutId = setTimeout(hideModal, 2000);
-
-            closeModalBtn.addEventListener('click', function() {
-                clearTimeout(timeoutId);
-                hideModal();
-            });
-
-            alertModal.addEventListener('click', function(event) {
-                if (event.target === alertModal) {
-                    clearTimeout(timeoutId);
-                    hideModal();
+        document.addEventListener("DOMContentLoaded", function() {
+            var alertModal = document.getElementById('alert-modal');
+            var closeModalBtn = document.getElementById('close-modal');
+        
+            if (alertModal) {
+                function hideModal() {
+                    alertModal.style.display = 'none';
                 }
-            });
-        }
-    });
+        
+              
+                var timeoutId = setTimeout(hideModal, 1500);
+   
+                if (closeModalBtn) {
+                    closeModalBtn.addEventListener('click', function() {
+                        clearTimeout(timeoutId);
+                        hideModal();
+                    });
+                }
+        
+                alertModal.addEventListener('click', function(event) {
+                    if (event.target === alertModal) {
+                        clearTimeout(timeoutId);
+                        hideModal();
+                    }
+                });
+            }
+        });
     </script>
     {% endblock %}
 
