@@ -494,6 +494,10 @@ class PlaylistUpdateForm(forms.Form):
             label="Canciones"
         )
 
+        if self.initial.get('canciones'):
+            self.fields['canciones'].initial = self.initial['canciones']
+
+
 class PlaylistActualizarCancionesForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(PlaylistActualizarCancionesForm, self).__init__(*args, **kwargs)
@@ -506,6 +510,9 @@ class PlaylistActualizarCancionesForm(forms.Form):
             label="Canciones",
             help_text="Mantén pulsada la tecla control para seleccionar varias canciones"
         )
+
+        if self.initial.get('canciones'):
+            self.fields['canciones'].initial = self.initial['canciones']
 
     def clean_canciones(self):
         canciones = self.cleaned_data.get('canciones')

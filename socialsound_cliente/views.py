@@ -412,17 +412,20 @@ def usuario_crear(request):
             if not formulario.is_valid():
                 return render(request, 'usuarios/crear-usuarios.html', {"formulario": formulario})
                 
-            headers = helper.crear_cabecera_contentType()
+           
             datos = formulario.cleaned_data.copy()
             
             if 'foto_perfil' in request.FILES:
                 foto = request.FILES['foto_perfil']
-                with foto.open('rb') as file:
-                    foto_contenido = file.read()
-                encoded = base64.b64encode(foto_contenido).decode('utf-8')
-                datos['foto_perfil'] = f"data:{foto.content_type};base64,{encoded}"
-            else:
-                datos['foto_perfil'] = ''
+                try:
+                    with foto.open('rb') as file:
+                        foto_contenido = file.read()
+                    encoded = base64.b64encode(foto_contenido).decode('utf-8')
+                    datos['foto_perfil'] = f"data:{foto.content_type};base64,{encoded}"
+                   
+                except Exception as e:
+                    print(f"Error procesando imagen: {e}")
+                    datos['foto_perfil'] = None
             
             response = helper.realizar_peticion_crear(
                 'usuarios/crear',
@@ -456,7 +459,7 @@ def usuario_editar(request, id):
     if request.method == "POST":
         formulario = UsuarioUpdateForm(request.POST, request.FILES, initial={'id': id})
         if formulario.is_valid():
-            headers = helper.crear_cabecera_contentType()
+           
             datos = formulario.cleaned_data.copy()
 
             if not datos.get('password'):
@@ -584,7 +587,7 @@ def album_crear(request):
             if 'usuario' in datos:
                 datos['usuario'] = int(datos['usuario'])
 
-            headers = helper.crear_cabecera_contentType()
+           
 
             if 'portada' in request.FILES:
                 portada = request.FILES['portada']
@@ -697,7 +700,7 @@ def album_editar_titulo(request, id):
                 print(f"Error de validación en album_editar_titulo: {formulario.errors}")
                 return render(request, 'albums/actualizar_titulo.html', {"formulario": formulario, "id": id})
 
-            headers = helper.crear_cabecera_contentType()
+           
             datos = request.POST.copy()
             response = helper.realizar_peticion_actualizar(
                 f'albumes/actualizar/titulo/{id}/',
@@ -912,7 +915,7 @@ def playlist_editar_canciones(request, id):
                 print(f"Error general en playlist_editar_canciones: {err}")
                 return mi_error_500(request)
         else:
-            # Debug de la estructura de las canciones
+           
             canciones = playlist.get('canciones', [])
             print("Canciones de la playlist:", canciones)
             
